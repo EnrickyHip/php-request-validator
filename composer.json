@@ -1,0 +1,31 @@
+{
+    "name": "enricky/request-validator",
+    "description": "HTTP request validator for PHP",
+    "version": "1.0.0",
+    "type": "library",
+    "require-dev": {
+        "pestphp/pest": "^1.22"
+    },
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Enricky\\RequestValidator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Enricky Hipólito",
+            "email": "enricky.hipolito@gmail.com"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": false
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/pest"
+    }
+}
