@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Enricky\RequestValidator;
 
 use Closure;
-use Enricky\Enums\DataType;
 use Enricky\RequestValidator\Abstract\ValidationRule;
+use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\Rules\IsProhibitedRule;
 use Enricky\RequestValidator\Rules\IsRequiredRule;
 use Enricky\RequestValidator\Rules\TypeRule;
@@ -61,7 +61,8 @@ class FieldValidator
 
     public function type(DataType|string $type, ?string $msg = null): self
     {
-        $rule = new TypeRule($type, $msg ?? "field '{$this->field}' is not of the type '$type'");
+        $typeName = $type instanceof DataType ? $type->value : $type;
+        $rule = new TypeRule($type, $msg ?? "field '{$this->field}' is not of the type '$typeName");
         $this->addRule($rule);
         return $this;
     }

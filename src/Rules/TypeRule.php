@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Rules;
 
-use Enricky\Enums\DataType;
-use Enricky\Enums\InvalidDataTypeException;
 use Enricky\RequestValidator\Abstract\ValidationRule;
+use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Enums\InvalidDataTypeException;
 
 class TypeRule extends ValidationRule
 {

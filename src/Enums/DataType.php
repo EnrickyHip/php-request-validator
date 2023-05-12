@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Enricky\Enums;
+namespace Enricky\RequestValidator\Enums;
 
 use Exception;
 
