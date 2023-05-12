@@ -1,8 +1,9 @@
 {
     "name": "enricky/request-validator",
     "description": "HTTP request validator for PHP",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "type": "library",
+    "license": "MIT",
     "require-dev": {
         "pestphp/pest": "^1.22"
     },
