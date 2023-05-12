@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Abstract;
 
-use Exception;
-
-class ValidateRuleException extends Exception
-{
-}
-
 abstract class ValidationRule
 {
   protected string $message;

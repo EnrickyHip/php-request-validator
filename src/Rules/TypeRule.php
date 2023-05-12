@@ -5,14 +5,23 @@ declare(strict_types=1);
 namespace Enricky\RequestValidator\Rules;
 
 use Enricky\Enums\DataType;
+use Enricky\Enums\InvalidDataTypeException;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
 class TypeRule extends ValidationRule
 {
     private DataType $type;
 
-    public function __construct(DataType $type, string $message)
+    public function __construct(DataType|string $type, string $message)
     {
+        if (is_string($type)) {
+            $type = DataType::tryFrom(strtolower($type));
+        }
+
+        if (!$type) {
+            throw new InvalidDataTypeException("Value '$type' is not a valid data type.");
+        }
+
         parent::__construct($message);
         $this->type = $type === DataType::FLOAT ? DataType::NUMERIC : $type;
     }

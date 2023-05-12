@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Rules;
 
-use BackedEnum;
-use Enricky\RequestValidator\Abstract\ValidateRuleException;
 use Enricky\RequestValidator\Abstract\ValidationRule;
-use UnexpectedValueException;
+use Exception;
+use UnitEnum;
+
+class NotValidEnumException extends Exception
+{
+}
 
 class ValidEnumRule extends ValidationRule
 {
@@ -15,8 +18,8 @@ class ValidEnumRule extends ValidationRule
 
     public function __construct(string $enumClass, string $message)
     {
-        if (!is_subclass_of($enumClass, BackedEnum::class)) {
-            throw new ValidateRuleException("class is not a Enum!");
+        if (!is_subclass_of($enumClass, UnitEnum::class)) {
+            throw new NotValidEnumException("class is not a Enum!");
         }
 
         parent::__construct($message);
@@ -25,11 +28,6 @@ class ValidEnumRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        try {
-            $this->enumClass::from($value);
-            return true;
-        } catch (UnexpectedValueException $exception) {
-            return false;
-        }
+        return (bool)$this->enumClass::tryFrom($value);
     }
 }

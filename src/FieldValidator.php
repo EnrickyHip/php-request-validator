@@ -59,7 +59,7 @@ class FieldValidator
         return $this;
     }
 
-    public function type(DataType $type, ?string $msg = null): self
+    public function type(DataType|string $type, ?string $msg = null): self
     {
         $rule = new TypeRule($type, $msg ?? "field '{$this->field}' is not of the type '$type'");
         $this->addRule($rule);

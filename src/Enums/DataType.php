@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Enricky\Enums;
 
+use Exception;
+
+class InvalidDataTypeException extends Exception
+{
+}
+
 enum DataType: string
 {
     case STRING = "string";
