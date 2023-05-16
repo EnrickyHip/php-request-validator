@@ -9,11 +9,11 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 
 class CustomRule extends ValidationRule
 {
-    /** @var bool|Closure(mixed $value): bool $condition */
-    private bool|Closure $condition;
+    /** @var Closure(mixed $value): bool $condition */
+    private Closure $condition;
 
     /** @param bool|Closure(mixed $value): bool $condition */
-    public function __construct(bool|Closure $condition, string $message)
+    public function __construct(Closure $condition, string $message)
     {
         parent::__construct($message);
         $this->condition = $condition;
@@ -21,13 +21,7 @@ class CustomRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        if ($this->condition instanceof Closure) {
-            $closure = $this->condition;
-            $condition = $closure($value);
-        } else {
-            $condition = $this->condition;
-        }
-
-        return $condition;
+        $closure = $this->condition;
+        return $closure($value);
     }
 }
