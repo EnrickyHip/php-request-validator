@@ -28,6 +28,10 @@ class TypeRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
+        if ($value === null) {
+            return true;
+        }
+
         $function = "is_" . mb_strtolower($this->type->value);
 
         if (!function_exists($function)) {

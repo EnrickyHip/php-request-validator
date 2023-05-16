@@ -108,10 +108,6 @@ class FieldValidator
         $this->errors = [];
 
         foreach ($this->majorRules as $rule) {
-            if (!$rule instanceof IsRequiredRule && $this->value === null) {
-                continue;
-            }
-
             if (!$rule->validate($this->value)) {
                 $this->isValid = false;
                 $this->errors = [$rule->getMessage()];
