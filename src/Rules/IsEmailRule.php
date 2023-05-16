@@ -10,6 +10,6 @@ class IsEmailRule extends ValidationRule
 {
     public function validate(mixed $value): bool
     {
-        return (bool)filter_var($value, FILTER_SANITIZE_EMAIL);
+        return (bool)filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 }
