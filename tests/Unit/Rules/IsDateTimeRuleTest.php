@@ -50,11 +50,11 @@ it("should not validate date with different formats", function (string $format, 
 ]);
 
 it("should not be a major rule", function () {
-    $isDateTiemRule = new IsDateTimeRule("Invalid Date");
-    expect($isDateTiemRule->isMajor())->toBeFalse();
+    $isDateTimeRule = new IsDateTimeRule("Invalid Date");
+    expect($isDateTimeRule->isMajor())->toBeFalse();
 });
 
 it("should return the correct error message", function () {
-    $isDateTiemRule = new IsDateTimeRule("Invalid Date");
-    expect($isDateTiemRule->getMessage())->toBe("Invalid Date");
+    $isDateTimeRule = new IsDateTimeRule("Invalid Date");
+    expect($isDateTimeRule->getMessage())->toBe("Invalid Date");
 });
