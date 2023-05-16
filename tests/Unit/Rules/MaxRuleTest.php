@@ -18,7 +18,7 @@ it("should not validate if not sent a string", function (mixed $value) {
     expect($this->maxRule->validate($value))->toBeFalse();
 })->with([1, true, [1, 2, 3], new stdClass()]);
 
-it("should validate if value has less or equal characteres than the maximum", function (string $value) {
+it("should validate if value length is less or equal than the maximum", function (string $value) {
     expect($this->maxRule->validate($value))->toBeTrue();
 })->with([
     "a",
@@ -27,9 +27,9 @@ it("should validate if value has less or equal characteres than the maximum", fu
     "aaaaaaaaaa",
 ]);
 
-it("should not validate if value has less or equal characteres than the maximum", function (string $value) {
+it("should not validate if value length is bigger than the maximum", function (string $value) {
     expect($this->maxRule->validate($value))->toBeFalse();
 })->with([
-    "aaaaaaaaaaaa",
+    "aaaaaaaaaaa",
     "aaaaaaaaaaaaaaaa",
 ]);
