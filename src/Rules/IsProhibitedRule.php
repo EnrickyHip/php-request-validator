@@ -23,7 +23,11 @@ class IsProhibitedRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        return $this->condition xor isset($value);
+        if (!$this->condition) {
+            return true;
+        }
+
+        return !isset($value);
     }
 
     public function isMajor(): bool
