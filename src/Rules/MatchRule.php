@@ -18,6 +18,6 @@ class MatchRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        return preg_match($this->match, $value);
+        return (bool)preg_match($this->match, $value);
     }
 }
