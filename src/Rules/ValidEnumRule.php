@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Rules;
 
+use BackedEnum;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Exceptions\InvalidEnumException;
-use UnitEnum;
 
 class ValidEnumRule extends ValidationRule
 {
@@ -14,8 +14,8 @@ class ValidEnumRule extends ValidationRule
 
     public function __construct(string $enumClass, string $message)
     {
-        if (!is_subclass_of($enumClass, UnitEnum::class)) {
-            throw new InvalidEnumException("class is not a Enum!");
+        if (!is_subclass_of($enumClass, BackedEnum::class)) {
+            throw new InvalidEnumException("class is not a Backed Enum!");
         }
 
         parent::__construct($message);
