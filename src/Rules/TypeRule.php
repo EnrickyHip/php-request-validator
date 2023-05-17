@@ -6,7 +6,7 @@ namespace Enricky\RequestValidator\Rules;
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Enums\DataType;
-use Enricky\RequestValidator\Enums\InvalidDataTypeException;
+use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 
 class TypeRule extends ValidationRule
 {
@@ -23,7 +23,7 @@ class TypeRule extends ValidationRule
         }
 
         parent::__construct($message);
-        $this->type = $type === DataType::FLOAT ? DataType::NUMERIC : $type;
+        $this->type = $type;
     }
 
     public function validate(mixed $value): bool
@@ -32,13 +32,7 @@ class TypeRule extends ValidationRule
             return true;
         }
 
-        $function = "is_" . mb_strtolower($this->type->value);
-
-        if (!function_exists($function)) {
-            return false;
-        }
-
-        return $function($value);
+        return $this->type->validate($value);
     }
 
     public function isMajor(): bool

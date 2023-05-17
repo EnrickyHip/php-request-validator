@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace Enricky\RequestValidator\Rules;
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
-use Exception;
+use Enricky\RequestValidator\Exceptions\InvalidEnumException;
 use UnitEnum;
-
-class NotValidEnumException extends Exception
-{
-}
 
 class ValidEnumRule extends ValidationRule
 {
@@ -19,7 +15,7 @@ class ValidEnumRule extends ValidationRule
     public function __construct(string $enumClass, string $message)
     {
         if (!is_subclass_of($enumClass, UnitEnum::class)) {
-            throw new NotValidEnumException("class is not a Enum!");
+            throw new InvalidEnumException("class is not a Enum!");
         }
 
         parent::__construct($message);

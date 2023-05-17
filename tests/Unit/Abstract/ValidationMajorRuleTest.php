@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
-
 class TestMajorRule extends ValidationRule
 {
     public function validate(mixed $value): bool
