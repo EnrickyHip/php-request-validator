@@ -10,8 +10,9 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class IsRequiredRule extends ValidationRule
 {
     private bool $condition;
+    protected string $message = "field :fieldName cannot be null'";
 
-    public function __construct(string $message, bool|Closure $condition = true)
+    public function __construct(?string $message = null, bool|Closure $condition = true)
     {
         if ($condition instanceof Closure) {
             $condition =  $condition();

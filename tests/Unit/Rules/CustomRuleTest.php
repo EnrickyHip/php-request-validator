@@ -4,7 +4,7 @@ use Enricky\RequestValidator\Rules\CustomRule;
 
 beforeEach(function () {
     $condition = fn (mixed $value) => $value === 1;
-    $this->customRule = new CustomRule($condition, "Should be 1");
+    $this->customRule = new CustomRule($condition);
 });
 
 it("should validate using custom condition", function () {
@@ -19,6 +19,12 @@ it("should not be a major rule", function () {
     expect($this->customRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
-    expect($this->customRule->getMessage())->toBe("Should be 1");
+it("should return the default error message if not sent", function () {
+    expect($this->customRule->getMessage())->toBe("field :fieldName is not valid");
+});
+
+it("should return the custom error message if sent", function () {
+    $condition = fn (mixed $value) => $value === 1;
+    $customRule = new CustomRule($condition, "Should be 1");
+    expect($customRule->getMessage())->toBe("Should be 1");
 });

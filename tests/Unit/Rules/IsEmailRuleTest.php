@@ -3,7 +3,7 @@
 use Enricky\RequestValidator\Rules\IsEmailRule;
 
 beforeEach(function () {
-    $this->emailRule = new IsEmailRule("invalid email");
+    $this->emailRule = new IsEmailRule();
 });
 
 it("should validate", function (string $email) {
@@ -40,6 +40,11 @@ it("should not be a major rule", function () {
     expect($this->emailRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
-    expect($this->emailRule->getMessage())->toBe("invalid email");
+it("should return the default error message", function () {
+    expect($this->emailRule->getMessage())->toBe("field :fieldName is not a valid email address");
+});
+
+it("should return the custom error message", function () {
+    $emailRule = new IsEmailRule("invalid email");
+    expect($emailRule->getMessage())->toBe("invalid email");
 });

@@ -37,7 +37,7 @@ class FieldValidator
 
     public function isRequired(?string $msg = null): self
     {
-        $rule = new IsRequiredRule($msg ?? "field '{$this->field}' cannot be null'");
+        $rule = new IsRequiredRule($msg);
         $this->addRule($rule);
         return $this;
     }
@@ -45,7 +45,6 @@ class FieldValidator
     /** @param bool|Closure(): bool $condition  */
     public function isRequiredIf(bool|Closure $condition, ?string $msg = null): self
     {
-        $msg = $msg ?? "field '{$this->field}' cannot be null'";
         $rule = new IsRequiredRule($msg, $condition);
         $this->addRule($rule);
         return $this;

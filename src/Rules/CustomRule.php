@@ -13,7 +13,7 @@ class CustomRule extends ValidationRule
     private Closure $condition;
 
     /** @param bool|Closure(mixed $value): bool $condition */
-    public function __construct(Closure $condition, string $message)
+    public function __construct(Closure $condition, ?string $message = null)
     {
         parent::__construct($message);
         $this->condition = $condition;

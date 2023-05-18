@@ -3,7 +3,7 @@
 use Enricky\RequestValidator\Rules\IsDateTimeRule;
 
 it("should validate valid date with default format (Y-m-d)", function (string $date) {
-    $isDateTimeRule = new IsDateTimeRule("Invalid Date");
+    $isDateTimeRule = new IsDateTimeRule();
     expect($isDateTimeRule->validate($date))->toBeTrue();
 })->with([
     "2023-05-16",
@@ -13,7 +13,7 @@ it("should validate valid date with default format (Y-m-d)", function (string $d
 ]);
 
 it("should not validate valid date with default format (Y-m-d)", function (string $date) {
-    $isDateTimeRule = new IsDateTimeRule("Invalid Date");
+    $isDateTimeRule = new IsDateTimeRule();
     expect($isDateTimeRule->validate($date))->toBeFalse();
 })->with([
     "20-12-2020",
@@ -26,7 +26,7 @@ it("should not validate valid date with default format (Y-m-d)", function (strin
 ]);
 
 it("should validate date with different formats", function (string $format, string $date) {
-    $isDateTimeRule = new IsDateTimeRule("Invalid Date", $format);
+    $isDateTimeRule = new IsDateTimeRule($format);
     expect($isDateTimeRule->validate($date))->toBeTrue();
 })->with([
     ["d/m/Y", "16/05/2023"],
@@ -36,7 +36,7 @@ it("should validate date with different formats", function (string $format, stri
 ]);
 
 it("should not validate date with different formats", function (string $format, string $date) {
-    $isDateTimeRule = new IsDateTimeRule("Invalid Date", $format);
+    $isDateTimeRule = new IsDateTimeRule($format);
     expect($isDateTimeRule->validate($date))->toBeFalse();
 })->with([
     ["d/m/Y", "16-05-2023"],
@@ -50,11 +50,16 @@ it("should not validate date with different formats", function (string $format, 
 ]);
 
 it("should not be a major rule", function () {
-    $isDateTimeRule = new IsDateTimeRule("Invalid Date");
+    $isDateTimeRule = new IsDateTimeRule();
     expect($isDateTimeRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
-    $isDateTimeRule = new IsDateTimeRule("Invalid Date");
+it("should return the default error message if not sent", function () {
+    $isDateTimeRule = new IsDateTimeRule();
+    expect($isDateTimeRule->getMessage())->toBe("field :fieldName is not a valid date");
+});
+
+it("should return the correct error message if sent", function () {
+    $isDateTimeRule = new IsDateTimeRule(message: "Invalid Date");
     expect($isDateTimeRule->getMessage())->toBe("Invalid Date");
 });

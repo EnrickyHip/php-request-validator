@@ -11,8 +11,9 @@ use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 class TypeRule extends ValidationRule
 {
     private DataType $type;
+    protected string $message = "field :fieldName is not a :type type";
 
-    public function __construct(DataType|string $type, string $message)
+    public function __construct(DataType|string $type, ?string $message = null)
     {
         if (is_string($type)) {
             $type = DataType::tryFrom(strtolower($type));

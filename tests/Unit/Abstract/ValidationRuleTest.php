@@ -16,7 +16,12 @@ beforeEach(function () {
     $this->testRule = new TestRule("Error message");
 });
 
-it("should return the correct error message", function () {
+it("should return default error message if not sent", function () {
+    $testRule = new TestRule();
+    expect($testRule->getMessage())->toBe("field :fieldName is not valid");
+});
+
+it("should return custom message if sent", function () {
     expect($this->testRule->getMessage())->toBe("Error message");
 });
 

@@ -22,27 +22,32 @@ enum EnumMock
 }
 
 it("should not be a major rule", function () {
-    $enumRule = new ValidEnumRule(BackedEnumMock::class, "not part of the enum");
+    $enumRule = new ValidEnumRule(BackedEnumMock::class);
     expect($enumRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
+it("should return the default error message", function () {
+    $enumRule = new ValidEnumRule(BackedEnumMock::class);
+    expect($enumRule->getMessage())->toBe("field :fieldName is not a part of the enum :enum");
+});
+
+it("should return the custom error message", function () {
     $enumRule = new ValidEnumRule(BackedEnumMock::class, "not part of the enum");
     expect($enumRule->getMessage())->toBe("not part of the enum");
 });
 
 it("should throw InvalidEnumException if class sent is not an backed enum", function (string $class) {
-    $closure = fn () => new ValidEnumRule($class, "not part of the enum");
+    $closure = fn () => new ValidEnumRule($class);
     expect($closure)->toThrow(InvalidEnumException::class);
 })->with([EnumMock::class, ValidEnumRule::class, "", "some random text", FieldValidator::class]);
 
 it("should create Rule if class sent is a backed enum", function (string $class) {
-    $enumRule = new ValidEnumRule($class, "not part of the enum");
+    $enumRule = new ValidEnumRule($class);
     expect($enumRule)->toBeInstanceOf(ValidEnumRule::class);
 })->with([DataType::class, BackedEnumMock::class]);
 
 it("should validate if value is part of the enum", function (string $enumClass, mixed $value) {
-    $enumRule = new ValidEnumRule($enumClass, "not part of the enum");
+    $enumRule = new ValidEnumRule($enumClass);
     expect($enumRule->validate($value))->toBeTrue();
 })->with([
     [BackedEnumMock::class, "value1"],
@@ -56,7 +61,7 @@ it("should validate if value is part of the enum", function (string $enumClass, 
 ]);
 
 it("should not validate if value is part of the enum", function (string $enumClass, mixed $value) {
-    $enumRule = new ValidEnumRule($enumClass, "not part of the enum");
+    $enumRule = new ValidEnumRule($enumClass);
     expect($enumRule->validate($value))->toBeFalse();
 })->with([
     [BackedEnumMock::class, "value"],

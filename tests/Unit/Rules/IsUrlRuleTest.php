@@ -3,7 +3,7 @@
 use Enricky\RequestValidator\Rules\IsUrlRule;
 
 beforeEach(function () {
-    $this->urlRule = new IsUrlRule("invalid url");
+    $this->urlRule = new IsUrlRule();
 });
 
 it("should validate", function (string $url) {
@@ -40,6 +40,11 @@ it("should not be a major rule", function () {
     expect($this->urlRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
-    expect($this->urlRule->getMessage())->toBe("invalid url");
+it("should return the default error message", function () {
+    expect($this->urlRule->getMessage())->toBe("field :fieldName is not a valid url");
+});
+
+it("should return the custom error message", function () {
+    $urlRule = new IsUrlRule("invalid url");
+    expect($urlRule->getMessage())->toBe("invalid url");
 });

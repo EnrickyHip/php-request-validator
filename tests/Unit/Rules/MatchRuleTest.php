@@ -7,7 +7,12 @@ it("should not be a major rule", function () {
     expect($matchRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
+it("should return the default error message", function () {
+    $matchRule = new MatchRule("");
+    expect($matchRule->getMessage())->toBe("field :fieldName does not match the given regular expression");
+});
+
+it("should return the custom error message", function () {
     $matchRule = new MatchRule("", "do not match");
     expect($matchRule->getMessage())->toBe("do not match");
 });

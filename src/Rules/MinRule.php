@@ -9,8 +9,9 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class MinRule extends ValidationRule
 {
     private int $min;
+    protected string $message = "field :fieldName length is lower than :min";
 
-    public function __construct(int $min, string $message)
+    public function __construct(int $min, ?string $message = null)
     {
         parent::__construct($message);
         $this->min = $min;

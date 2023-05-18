@@ -7,7 +7,12 @@ it("should be a major rule", function () {
     expect($isRequiredRule->isMajor())->toBeTrue();
 });
 
-it("should return the correct error message", function () {
+it("should return the default error message", function () {
+    $isRequiredRule = new IsRequiredRule();
+    expect($isRequiredRule->getMessage())->toBe("field :fieldName cannot be null'");
+});
+
+it("should return the custom error message", function () {
     $isRequiredRule = new IsRequiredRule("is required");
     expect($isRequiredRule->getMessage())->toBe("is required");
 });

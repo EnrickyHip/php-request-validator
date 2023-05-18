@@ -7,7 +7,12 @@ it("should be a major rule", function () {
     expect($isProhibitedRule->isMajor())->toBeTrue();
 });
 
-it("should return the correct error message", function () {
+it("should return the default error message", function () {
+    $isProhibitedRule = new IsProhibitedRule(true);
+    expect($isProhibitedRule->getMessage())->toBe("field :fieldName is prohibited");
+});
+
+it("should return the custom error message", function () {
     $isProhibitedRule = new IsProhibitedRule(true, "is prohibited");
     expect($isProhibitedRule->getMessage())->toBe("is prohibited");
 });

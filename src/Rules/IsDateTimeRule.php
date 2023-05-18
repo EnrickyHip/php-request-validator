@@ -10,8 +10,9 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class IsDateTimeRule extends ValidationRule
 {
     private string $format;
+    protected string $message = "field :fieldName is not a valid date";
 
-    public function __construct(string $message, string $format = "Y-m-d")
+    public function __construct(string $format = "Y-m-d", ?string $message = null)
     {
         parent::__construct($message);
         $this->format = $format;

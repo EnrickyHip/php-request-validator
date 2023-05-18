@@ -3,15 +3,20 @@
 use Enricky\RequestValidator\Rules\MaxRule;
 
 beforeEach(function () {
-    $this->maxRule = new MaxRule(10, "too big!");
+    $this->maxRule = new MaxRule(10);
 });
 
 it("should not be a major rule", function () {
     expect($this->maxRule->isMajor())->toBeFalse();
 });
 
-it("should return the correct error message", function () {
-    expect($this->maxRule->getMessage())->toBe("too big!");
+it("should return the default error message", function () {
+    expect($this->maxRule->getMessage())->toBe("field :fieldName length is bigger than :max");
+});
+
+it("should return the curtom error message", function () {
+    $maxRule = new MaxRule(10, "too big!");
+    expect($maxRule->getMessage())->toBe("too big!");
 });
 
 it("should not validate if not sent a string", function (mixed $value) {

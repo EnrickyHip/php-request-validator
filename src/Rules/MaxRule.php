@@ -9,8 +9,9 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class MaxRule extends ValidationRule
 {
     private int $max;
+    protected string $message = "field :fieldName length is bigger than :max";
 
-    public function __construct(int $max, string $message)
+    public function __construct(int $max, ?string $message = null)
     {
         parent::__construct($message);
         $this->max = $max;

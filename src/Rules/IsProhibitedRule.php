@@ -10,8 +10,9 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class IsProhibitedRule extends ValidationRule
 {
     private bool $condition;
+    protected string $message = "field :fieldName is prohibited";
 
-    public function __construct(bool|Closure $condition, string $message)
+    public function __construct(bool|Closure $condition, ?string $message = null)
     {
         if ($condition instanceof Closure) {
             $condition = $condition();

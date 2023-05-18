@@ -3,15 +3,20 @@
 use Enricky\RequestValidator\Rules\MinRule;
 
 beforeEach(function () {
-    $this->minRule = new MinRule(10, "too small!");
+    $this->minRule = new MinRule(10);
 });
 
 it("should not be a major rule", function () {
     expect($this->minRule->isMajor())->toBeFalse();
 });
 
+it("should return the default error message", function () {
+    expect($this->minRule->getMessage())->toBe("field :fieldName length is lower than :min");
+});
+
 it("should return the correct error message", function () {
-    expect($this->minRule->getMessage())->toBe("too small!");
+    $minRule = new MinRule(10, "too small!");
+    expect($minRule->getMessage())->toBe("too small!");
 });
 
 it("should not validate if not sent a string", function (mixed $value) {

@@ -6,11 +6,13 @@ namespace Enricky\RequestValidator\Abstract;
 
 abstract class ValidationRule
 {
-  protected string $message;
+  protected string $message = "field :fieldName is not valid";
 
-  public function __construct(string $message)
+  public function __construct(?string $customMessage = null)
   {
-    $this->message = $message;
+    if ($customMessage !== null) {
+      $this->message = $customMessage;
+    }
   }
 
   abstract public function validate(mixed $value): bool;
