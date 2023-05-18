@@ -23,16 +23,11 @@ class FieldValidator
     private ?array $errors = null;
 
     private ?bool $isValid = null;
-    private mixed $value = null;
-    private string $field;
+    private Field $field;
 
-    public function __construct(array $data, string $field)
+    public function __construct(Field $field)
     {
         $this->field = $field;
-
-        if (isset($data[$field]) && $data[$field] !== "") {
-            $this->value = $data[$field];
-        }
     }
 
     public function isRequired(?string $msg = null): self
@@ -78,15 +73,11 @@ class FieldValidator
         return $this;
     }
 
-    public function getFieldName(): string
+    public function getField(): Field
     {
         return $this->field;
     }
 
-    public function getValue(): mixed
-    {
-        return $this->value;
-    }
 
     public function isValid(): bool
     {
@@ -107,16 +98,16 @@ class FieldValidator
         $this->errors = [];
 
         foreach ($this->majorRules as $rule) {
-            if (!$rule->validate($this->value)) {
+            if (!$rule->validate($this->field->getValue())) {
                 $this->isValid = false;
                 $this->errors = [$rule->getMessage()];
                 return $this->errors;
             }
         }
 
-        if ($this->value !== null) {
+        if ($this->field->getValue() !== null) {
             foreach ($this->rules as $rule) {
-                if (!$rule->validate($this->value)) {
+                if (!$rule->validate($this->field->getValue())) {
                     $this->errors[] = $rule->getMessage();
                 }
             }
