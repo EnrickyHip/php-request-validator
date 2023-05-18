@@ -6,7 +6,8 @@ namespace Enricky\RequestValidator\Abstract;
 
 abstract class ValidationRule
 {
-  protected string $message = "field :fieldName is not valid";
+  protected string $message = "field :fieldName is invalid";
+  protected array $params = [];
 
   public function __construct(?string $customMessage = null)
   {
@@ -24,8 +25,30 @@ abstract class ValidationRule
     return false;
   }
 
+  final public function resolveMessage(FieldInterface $field): string
+  {
+    $params = [
+      ...$this->params,
+      ":fieldName" => $field->getName(),
+      ":fieldValue" => $field->getValue(),
+    ];
+
+    return $this->replaceParams($params);
+  }
+
   final public function getMessage(): string
   {
     return $this->message;
+  }
+
+  private function replaceParams(array $params): string
+  {
+    $message = $this->message;
+
+    foreach ($params as $param => $value) {
+      $message = str_replace($param, $value, $message);
+    }
+
+    return $message;
   }
 }
