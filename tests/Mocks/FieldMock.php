@@ -5,8 +5,8 @@ use Enricky\RequestValidator\Abstract\FieldInterface;
 class FieldMock implements FieldInterface
 {
     public function __construct(
-        private string $name,
-        private mixed $value
+        private string $name = "name",
+        private mixed $value = "value"
     ) {
     }
 

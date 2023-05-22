@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
-class TestValidationRuleAlternativeWithParams extends ValidationRule
+class ValidationRuleWithParams extends ValidationRule
 {
     private string $param;
     private string $otherParam;
@@ -28,7 +28,7 @@ class TestValidationRuleAlternativeWithParams extends ValidationRule
 
 it("should replace custom parameters", function (string $param, string $otherParam) {
     $field = new FieldMock("testName", "testValue");
-    $testRule = new TestValidationRuleAlternativeWithParams($param, $otherParam);
+    $testRule = new ValidationRuleWithParams($param, $otherParam);
     expect($testRule->resolveMessage($field))->toBe("the field testName with value testValue is not equal to $param or $otherParam");
 })->with([
     ["test", "otherTest"],

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Enricky\RequestValidator;
 
 use Closure;
+use Enricky\RequestValidator\Abstract\FieldInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\Rules\IsProhibitedRule;
@@ -20,12 +21,12 @@ class FieldValidator
     private array $rules = [];
 
     /** @var string[] $errors */
-    private ?array $errors = null;
+    private array $errors = [];
 
     private ?bool $isValid = null;
-    private Field $field;
+    private FieldInterface $field;
 
-    public function __construct(Field $field)
+    public function __construct(FieldInterface $field)
     {
         $this->field = $field;
     }
@@ -48,20 +49,18 @@ class FieldValidator
     /** @param bool|Closure(): bool $condition  */
     public function prohibitedIf(bool|Closure $condition, ?string $msg = null): self
     {
-        $rule = new IsProhibitedRule($condition, $msg ?? "field '{$this->field}' cannot be send");
+        $rule = new IsProhibitedRule($condition, $msg);
         $this->addRule($rule);
         return $this;
     }
 
     public function type(DataType|string $type, ?string $msg = null): self
     {
-        $typeName = $type instanceof DataType ? $type->value : $type;
-        $rule = new TypeRule($type, $msg ?? "field '{$this->field}' is not of the type '$typeName");
+        $rule = new TypeRule($type, $msg);
         $this->addRule($rule);
         return $this;
     }
 
-    /** @param ValidationRule[] $dependencies */
     public function addRule(ValidationRule $rule): self
     {
         if ($rule->isMajor()) {
@@ -73,47 +72,45 @@ class FieldValidator
         return $this;
     }
 
-    public function getField(): Field
+    public function getField(): FieldInterface
     {
         return $this->field;
-    }
-
-
-    public function isValid(): bool
-    {
-        if ($this->isValid === null) {
-            $this->isValid = empty($this->getErrors());
-        }
-
-        return $this->isValid;
     }
 
     /** @return string[] */
     public function getErrors(): array
     {
-        if ($this->errors !== null) {
-            return $this->errors;
+        if ($this->isValid === null) {
+            $this->validate();
         }
 
+        return $this->errors;
+    }
+
+    public function validate(): bool
+    {
+        $this->isValid = true;
         $this->errors = [];
 
-        foreach ($this->majorRules as $rule) {
-            if (!$rule->validate($this->field->getValue())) {
+        foreach ($this->majorRules as $majorRule) {
+            if (!$majorRule->validate($this->field->getValue())) {
+                $this->errors[] = $majorRule->resolveMessage($this->field);
                 $this->isValid = false;
-                $this->errors = [$rule->getMessage()];
-                return $this->errors;
+                return false;
             }
         }
 
-        if ($this->field->getValue() !== null) {
-            foreach ($this->rules as $rule) {
-                if (!$rule->validate($this->field->getValue())) {
-                    $this->errors[] = $rule->getMessage();
-                }
+        if ($this->field->getValue() === null) {
+            return true;
+        }
+
+        foreach ($this->rules as $rule) {
+            if (!$rule->validate($this->field->getValue())) {
+                $this->errors[] = $rule->resolveMessage($this->field);
             }
         }
 
         $this->isValid = empty($this->errors);
-        return $this->errors;
+        return $this->isValid;
     }
 }
