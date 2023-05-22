@@ -81,8 +81,8 @@ it("should return resolved errors", function () {
 
     expect($this->fieldValidator->getErrors())->toEqualCanonicalizing(
         [
-            "the field name with value value is not equal to test or otherTest",
-            "field name is invalid",
+            "the field 'name' with value 'value' is not valid with 'test' and 'otherTest'",
+            "field 'name' is invalid",
         ]
     );
 });
@@ -95,7 +95,7 @@ it("should only show one message if a major rule is invalid", function () {
         ->addRule(createRule(false))
         ->addRule(createRule(false));
 
-    expect($this->fieldValidator->getErrors())->toEqual(["field name is invalid"]);
+    expect($this->fieldValidator->getErrors())->toEqual(["field 'name' is invalid"]);
 });
 
 
@@ -129,7 +129,7 @@ it("should not validate if field is required but value is null", function () {
     $fieldValidator1 = (new FieldValidator($field))->isRequired();
 
     expect($fieldValidator1->validate())->toBeFalse();
-    expect($fieldValidator1->getErrors())->toEqual(["field name is required"]);
+    expect($fieldValidator1->getErrors())->toEqual(["field 'name' is required"]);
 
     $fieldValidator2 = (new FieldValidator($field))->isRequired("custom message");
 
@@ -146,7 +146,7 @@ it("should be required if condition is true", function () {
 
     $fieldValidator2 = (new FieldValidator($nullField))->isRequiredIf(true);
     expect($fieldValidator2->validate())->toBeFalse();
-    expect($fieldValidator2->getErrors())->toEqual(["field name is required"]);
+    expect($fieldValidator2->getErrors())->toEqual(["field 'name' is required"]);
 
     $fieldValidator3 = (new FieldValidator($nullField))->isRequiredIf(true, "custom message");
     expect($fieldValidator3->validate())->toBeFalse();
@@ -177,7 +177,7 @@ it("should be prohibited if condition is true", function () {
 
     $fieldValidator1 = (new FieldValidator($field))->prohibitedIf(true);
     expect($fieldValidator1->validate())->toBeFalse();
-    expect($fieldValidator1->getErrors())->toEqual(["field name is prohibited"]);
+    expect($fieldValidator1->getErrors())->toEqual(["field 'name' is prohibited"]);
 
     $fieldValidator2 = (new FieldValidator($field))->prohibitedIf(true, "custom message");
     expect($fieldValidator2->validate())->toBeFalse();
@@ -212,5 +212,5 @@ it("should not validate if type is incorrect", function (DataType|string $type, 
     $typeName = $type instanceof DataType ? $type->value : $type;
 
     expect($fieldValidator->validate())->toBeFalse();
-    expect($fieldValidator->getErrors())->toEqual(["field name is not a $typeName type"]);
+    expect($fieldValidator->getErrors())->toEqual(["field 'name' is not a $typeName type"]);
 })->with("incorrect_types");

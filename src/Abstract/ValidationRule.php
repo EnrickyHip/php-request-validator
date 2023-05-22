@@ -27,10 +27,14 @@ abstract class ValidationRule
 
   final public function resolveMessage(FieldInterface $field): string
   {
+    $stringifiedParams = array_map(function ($value) {
+      return $this->stringifyParam($value);
+    }, $this->params);
+
     $params = [
-      ...$this->params,
-      ":fieldName" => $field->getName(),
-      ":fieldValue" => $field->getValue(),
+      ...$stringifiedParams,
+      ":fieldName" => $this->stringifyParam($field->getName()),
+      ":fieldValue" => $this->stringifyParam($field->getValue()),
     ];
 
     return $this->replaceParams($params);
@@ -39,6 +43,20 @@ abstract class ValidationRule
   final public function getMessage(): string
   {
     return $this->message;
+  }
+
+  private function stringifyParam(mixed $value): string
+  {
+    return match (gettype($value)) {
+      "string" => "'$value'",
+      "boolean" => $value ? "true" : "false",
+      "integer" => (string)$value,
+      "double" => (string)$value,
+      "array" => "[array]",
+      "object" => "{object}",
+      "NULL" => "null",
+      "unknown type" => "unknown",
+    };
   }
 
   private function replaceParams(array $params): string

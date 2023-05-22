@@ -10,7 +10,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class IsRequiredRule extends ValidationRule
 {
     private bool $condition;
-    protected string $message = "field :fieldName is required'";
+    protected string $message = "field :fieldName is required";
 
     public function __construct(?string $message = null, bool|Closure $condition = true)
     {

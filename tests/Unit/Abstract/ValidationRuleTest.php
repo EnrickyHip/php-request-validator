@@ -36,7 +36,8 @@ it("should return true when validation fails", function () {
 
 
 it("should replace name param on message", function (FieldInterface $field) {
-    expect($this->testRule->resolveMessage($field))->toBe("field {$field->getName()} is invalid");
+    $fieldName = $field->getName();
+    expect($this->testRule->resolveMessage($field))->toBe("field '$fieldName' is invalid");
 })->with([
     fn () => new FieldMock("name", "Enricky"),
     fn () => new FieldMock("email", "enricky@email.com"),

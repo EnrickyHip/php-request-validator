@@ -7,10 +7,10 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class ValidationRuleWithParams extends ValidationRule
 {
     private string $param;
-    private string $otherParam;
-    protected string $message = "the field :fieldName with value :fieldValue is not equal to :param or :otherParam";
+    private mixed $otherParam;
+    protected string $message = "the field :fieldName with value :fieldValue is not valid with :param and :otherParam";
 
-    public function __construct(string $param, string $otherParam)
+    public function __construct(string $param, mixed $otherParam)
     {
         $this->param = $param;
         $this->otherParam = $otherParam;
@@ -26,13 +26,17 @@ class ValidationRuleWithParams extends ValidationRule
     }
 }
 
-it("should replace custom parameters", function (string $param, string $otherParam) {
+it("should replace custom parameters", function (string $param, mixed $otherParam, string $otherParamRepresentation) {
     $field = new FieldMock("testName", "testValue");
     $testRule = new ValidationRuleWithParams($param, $otherParam);
-    expect($testRule->resolveMessage($field))->toBe("the field testName with value testValue is not equal to $param or $otherParam");
+    expect($testRule->resolveMessage($field))->toBe("the field 'testName' with value 'testValue' is not valid with '$param' and $otherParamRepresentation");
 })->with([
-    ["test", "otherTest"],
-    ["Enricky", "otherEnricky"],
-    ["randomTest", "otherRandomTest"],
-    ["", "other"]
+    ["test", "otherTest", "'otherTest'"],
+    ["test2", 1, "1"],
+    ["test3", 10.5, "10.5"],
+    ["test4", true, "true"],
+    ["test5", false, "false"],
+    ["test6", [], "[array]"],
+    ["test7", new stdClass(), "{object}"],
+    ["test8", null, "null"],
 ]);
