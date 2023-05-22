@@ -3,6 +3,7 @@
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\FieldValidator;
+use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
     $field = new FieldMock();
@@ -205,12 +206,20 @@ it("should validate if type is correct", function (DataType|string $type, mixed 
     expect($fieldValidator->validate())->toBeTrue();
 })->with("correct_types");
 
-it("should not validate if type is incorrect", function (DataType|string $type, mixed $value) {
+it("should not validate if type is incorrect with default message", function (DataType|string $type, mixed $value) {
     $field = new FieldMock("name", $value);
     $fieldValidator = (new FieldValidator($field))->type($type);
 
-    $typeName = $type instanceof DataType ? $type->value : $type;
+    $typeName = $type instanceof DataType ? $type->value : strtolower($type);
 
     expect($fieldValidator->validate())->toBeFalse();
-    expect($fieldValidator->getErrors())->toEqual(["field 'name' is not a $typeName type"]);
+    expect($fieldValidator->getErrors())->toEqual(["field 'name' is not of type '$typeName'"]);
+})->with("incorrect_types");
+
+it("should not validate if type is incorrect with custom message", function (DataType|string $type, mixed $value) {
+    $field = new FieldMock("name", $value);
+    $fieldValidator = (new FieldValidator($field))->type($type, "incorrect type");
+
+    expect($fieldValidator->validate())->toBeFalse();
+    expect($fieldValidator->getErrors())->toEqual(["incorrect type"]);
 })->with("incorrect_types");

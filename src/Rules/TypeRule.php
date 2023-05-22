@@ -11,7 +11,7 @@ use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 class TypeRule extends ValidationRule
 {
     private DataType $type;
-    protected string $message = "field :fieldName is not a :type type";
+    protected string $message = "field :fieldName is not of type :type";
 
     public function __construct(DataType|string $type, ?string $message = null)
     {
@@ -25,6 +25,9 @@ class TypeRule extends ValidationRule
 
         parent::__construct($message);
         $this->type = $type;
+        $this->params = [
+            ":type" => $this->type->value,
+        ];
     }
 
     public function validate(mixed $value): bool

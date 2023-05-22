@@ -11,7 +11,7 @@ it("should not be a major rule", function () {
 
 it("should return the default error message", function () {
     $typeRule = new TypeRule(DataType::INT);
-    expect($typeRule->getMessage())->toBe("field :fieldName is not a :type type");
+    expect($typeRule->getMessage())->toBe("field :fieldName is not of type :type");
 });
 
 it("should return the custom error message", function () {
