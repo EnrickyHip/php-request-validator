@@ -7,12 +7,13 @@ namespace Enricky\RequestValidator;
 use Closure;
 use Enricky\RequestValidator\Abstract\FieldInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
+use Enricky\RequestValidator\Abstract\ValidatorInterface;
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\Rules\IsProhibitedRule;
 use Enricky\RequestValidator\Rules\IsRequiredRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
-class FieldValidator
+class FieldValidator implements ValidatorInterface
 {
     /** @var ValidationRule[] $majorRules */
     private array $majorRules = [];

@@ -6,11 +6,16 @@ namespace Enricky\RequestValidator\Abstract;
 
 abstract class Request
 {
-    /** @return FieldValidator[] */
+    /** @return ValidatorInterface[] */
     abstract public function rules(array $data): array;
 
+    final public function validate(array $data): bool
+    {
+        return empty($this->getErrors($data));
+    }
+
     /** @return string[] */
-    final public function validate(array $data): array
+    final public function getErrors(array $data): array
     {
         $validators = $this->rules($data);
         $errors = [];
