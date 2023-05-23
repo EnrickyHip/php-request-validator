@@ -56,8 +56,8 @@ abstract class ValidationRule
         return false;
     }
 
-
     /**
+     * @internal
      * Resolve the error message by replacing placeholders with actual values.
      * The two placeholders `:fieldName` and `:fieldValue` are built in and will be replaced automatically.
      *

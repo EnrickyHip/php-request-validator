@@ -15,6 +15,9 @@ class MinRule extends ValidationRule
     {
         parent::__construct($message);
         $this->min = $min;
+        $this->params = [
+            ":min" => $this->min,
+        ];
     }
 
     public function validate(mixed $value): bool

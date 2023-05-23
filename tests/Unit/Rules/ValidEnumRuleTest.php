@@ -73,3 +73,9 @@ it("should not validate if value is part of the enum", function (string $enumCla
     [DataType::class, "2"],
     [DataType::class, "value"],
 ]);
+
+it("should replace :enum parameter with the enum class name", function (string $enumClass) {
+    $enumRule = new ValidEnumRule($enumClass);
+    $message = $enumRule->resolveMessage(new FieldMock());
+    expect($message)->toBe("field 'name' is not a part of the enum '$enumClass'");
+})->with([BackedEnumMock::class, DataType::class]);

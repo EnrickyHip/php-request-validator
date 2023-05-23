@@ -38,3 +38,9 @@ it("should not validate if value type is not correct", function (DataType|string
     $typeRule = new TypeRule($type);
     expect($typeRule->validate($value))->toBeFalse();
 })->with("incorrect_types");
+
+it("should replace :type parameter with the correct type name", function (DataType $type) {
+    $typeRule = new TypeRule($type);
+    $message = $typeRule->resolveMessage(new FieldMock());
+    expect($message)->toBe("field 'name' is not of type '{$type->value}'");
+})->with(DataType::cases());

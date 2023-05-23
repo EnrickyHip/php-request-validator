@@ -21,6 +21,9 @@ class ValidEnumRule extends ValidationRule
 
         parent::__construct($message);
         $this->enumClass = $enumClass;
+        $this->params = [
+            ":enum" => $enumClass
+        ];
     }
 
     public function validate(mixed $value): bool

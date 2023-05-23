@@ -15,6 +15,9 @@ class MaxRule extends ValidationRule
     {
         parent::__construct($message);
         $this->max = $max;
+        $this->params = [
+            ":max" => $this->max,
+        ];
     }
 
     public function validate(mixed $value): bool

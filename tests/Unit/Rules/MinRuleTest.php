@@ -38,3 +38,8 @@ it("should validate if value length is bigger than or equal the maximum", functi
     "aaaaaaaaaaaa",
     "aaaaaaaaaaaaaaaa",
 ]);
+
+it("should replace :min parameter with given value", function () {
+    $message = $this->minRule->resolveMessage(new FieldMock());
+    expect($message)->toBe("field 'name' length is lower than 10");
+});
