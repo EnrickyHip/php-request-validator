@@ -6,11 +6,18 @@ namespace Enricky\RequestValidator\Rules;
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
+/** Rule to validate the minimum length of a string field. */
 class MinRule extends ValidationRule
 {
     private int $min;
     protected string $message = "field :fieldName length is lower than :min";
 
+    /**
+     * Create a new MaxRule instance.
+     *
+     * @param int $min The minimum length allowed for the string field.
+     * @param string|null $message The custom error message for the rule.
+     */
     public function __construct(int $min, ?string $message = null)
     {
         parent::__construct($message);

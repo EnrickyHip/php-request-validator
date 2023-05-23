@@ -13,6 +13,14 @@ enum BackedEnumMock: string
     case VALUE_4 = "value4";
 }
 
+enum BackedEnumMockInt: int
+{
+    case VALUE_1 = 1;
+    case VALUE_2 = 2;
+    case VALUE_3 = 3;
+    case VALUE_4 = 4;
+}
+
 enum EnumMock
 {
     case VALUE_1;
@@ -58,6 +66,10 @@ it("should validate if value is part of the enum", function (string $enumClass, 
     [DataType::class, "int"],
     [DataType::class, "bool"],
     [DataType::class, "float"],
+    [BackedEnumMockInt::class, 1],
+    [BackedEnumMockInt::class, 2],
+    [BackedEnumMockInt::class, 3],
+    [BackedEnumMockInt::class, 4],
 ]);
 
 it("should not validate if value is part of the enum", function (string $enumClass, mixed $value) {
@@ -72,6 +84,10 @@ it("should not validate if value is part of the enum", function (string $enumCla
     [DataType::class, "integer"],
     [DataType::class, "2"],
     [DataType::class, "value"],
+    [BackedEnumMockInt::class, "string"],
+    [BackedEnumMockInt::class, "integer"],
+    [BackedEnumMockInt::class, 5],
+    [BackedEnumMockInt::class, 0],
 ]);
 
 it("should replace :enum parameter with the enum class name", function (string $enumClass) {
@@ -79,3 +95,13 @@ it("should replace :enum parameter with the enum class name", function (string $
     $message = $enumRule->resolveMessage(new FieldMock());
     expect($message)->toBe("field 'name' is not a part of the enum '$enumClass'");
 })->with([BackedEnumMock::class, DataType::class]);
+
+it("should return false if value is not a string on a string backed enum", function (mixed $value) {
+    $enumRule = new ValidEnumRule(BackedEnumMock::class);
+    expect($enumRule->validate($value))->toBeFalse();
+})->with([DataType::INT, null, 1, false, new stdClass()]);
+
+it("should return false if value is not a integer on a integer backed enum", function (mixed $value) {
+    $enumRule = new ValidEnumRule(BackedEnumMockInt::class);
+    expect($enumRule->validate($value))->toBeFalse();
+})->with([DataType::INT, null, "1", "string", false, new stdClass()]);

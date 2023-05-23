@@ -6,6 +6,7 @@ namespace Enricky\RequestValidator\Rules;
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
+/** Rule to validate if a value matches a given regular expression */
 class MatchRule extends ValidationRule
 {
     private string $match;
@@ -17,6 +18,12 @@ class MatchRule extends ValidationRule
         $this->match = $match;
     }
 
+    /**
+     * Create a new MatchRule instance.
+     *
+     * @param string $match The regular expression pattern to match against.
+     * @param string|null $message The custom error message for the rule.
+     */
     public function validate(mixed $value): bool
     {
         return (bool)preg_match($this->match, $value);

@@ -6,11 +6,18 @@ namespace Enricky\RequestValidator\Rules;
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
+/** Rule to validate the maximum length of a string field. */
 class MaxRule extends ValidationRule
 {
     private int $max;
     protected string $message = "field :fieldName length is bigger than :max";
 
+    /**
+     * Create a new MaxRule instance.
+     *
+     * @param int $max The maximum length allowed for the string field.
+     * @param string|null $message The custom error message for the rule.
+     */
     public function __construct(int $max, ?string $message = null)
     {
         parent::__construct($message);
