@@ -9,4 +9,6 @@ interface ValidatorInterface
 
     /** @return bool True if the all the validator's rules are valid, false otherwise. */
     public function validate(): bool;
+
+    public function addRule(ValidationRule $rule): self;
 }

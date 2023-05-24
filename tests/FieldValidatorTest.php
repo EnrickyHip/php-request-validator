@@ -3,7 +3,6 @@
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\FieldValidator;
-use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
     $field = new FieldMock();

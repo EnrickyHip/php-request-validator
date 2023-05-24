@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator;
 
-use Closure;
 use Enricky\RequestValidator\Abstract\FieldInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Abstract\ValidatorInterface;
-use Enricky\RequestValidator\Enums\DataType;
-use Enricky\RequestValidator\Rules\IsProhibitedRule;
-use Enricky\RequestValidator\Rules\IsRequiredRule;
-use Enricky\RequestValidator\Rules\TypeRule;
+use Enricky\RequestValidator\Traits\RequiredRulesSimplifier;
+use Enricky\RequestValidator\Traits\TypeRuleSimplifier;
 
 class FieldValidator implements ValidatorInterface
 {
+    use RequiredRulesSimplifier;
+    use TypeRuleSimplifier;
+
     /** @var ValidationRule[] $majorRules */
     private array $majorRules = [];
 
@@ -30,36 +30,6 @@ class FieldValidator implements ValidatorInterface
     public function __construct(FieldInterface $field)
     {
         $this->field = $field;
-    }
-
-    public function isRequired(?string $msg = null): self
-    {
-        $rule = new IsRequiredRule($msg);
-        $this->addRule($rule);
-        return $this;
-    }
-
-    /** @param bool|Closure(): bool $condition  */
-    public function isRequiredIf(bool|Closure $condition, ?string $msg = null): self
-    {
-        $rule = new IsRequiredRule($msg, $condition);
-        $this->addRule($rule);
-        return $this;
-    }
-
-    /** @param bool|Closure(): bool $condition  */
-    public function prohibitedIf(bool|Closure $condition, ?string $msg = null): self
-    {
-        $rule = new IsProhibitedRule($condition, $msg);
-        $this->addRule($rule);
-        return $this;
-    }
-
-    public function type(DataType|string $type, ?string $msg = null): self
-    {
-        $rule = new TypeRule($type, $msg);
-        $this->addRule($rule);
-        return $this;
     }
 
     public function addRule(ValidationRule $rule): self

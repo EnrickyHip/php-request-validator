@@ -7,6 +7,13 @@ namespace Enricky\RequestValidator\Abstract;
 /** Abstract class to represent a request validation.  */
 abstract class Request
 {
+    protected array $data;
+
+    public function __construct(array $data)
+    {
+        $this->data = $data;
+    }
+
     /**
      * Defines the validaton rules for the request data.
      *
@@ -33,7 +40,7 @@ abstract class Request
      *    }
      * ```
      */
-    abstract public function rules(array $data): array;
+    abstract public function rules(): array;
 
     /**
      * Validates the request data based on the defined rules.
@@ -42,9 +49,9 @@ abstract class Request
      *
      * @return bool Returns true if the request data is valid, false otherwise.
      */
-    final public function validate(array $data): bool
+    final public function validate(): bool
     {
-        return empty($this->getErrors($data));
+        return empty($this->getErrors());
     }
 
     /**
@@ -54,9 +61,9 @@ abstract class Request
      *
      * @return string[] An array of validation error messages.
      */
-    final public function getErrors(array $data): array
+    final public function getErrors(): array
     {
-        $validators = $this->rules($data);
+        $validators = $this->rules();
         $errors = [];
 
         foreach ($validators as $validator) {
