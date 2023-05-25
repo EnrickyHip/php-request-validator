@@ -6,7 +6,6 @@ use Closure;
 use Enricky\RequestValidator\Rules\IsProhibitedRule;
 use Enricky\RequestValidator\Rules\IsRequiredRule;
 
-
 trait RequiredRulesSimplifier
 {
     public function isRequired(?string $msg = null): self
