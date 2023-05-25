@@ -38,4 +38,10 @@ class FileTypeRule extends ValidationRule
 
         return in_array($value->getType(), $this->types);
     }
+
+    /** @return FileType[] */
+    public function getTypes(): array
+    {
+        return $this->types;
+    }
 }

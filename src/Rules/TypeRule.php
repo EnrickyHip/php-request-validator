@@ -49,6 +49,11 @@ class TypeRule extends ValidationRule
         return $this->type->validate($value);
     }
 
+    public function getType(): DataType
+    {
+        return $this->type;
+    }
+
     public function isMajor(): bool
     {
         return true;

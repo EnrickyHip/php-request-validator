@@ -44,3 +44,11 @@ it("should replace :type parameter with the correct type name", function (DataTy
     $message = $typeRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' is not of type '{$type->value}'");
 })->with(DataType::cases());
+
+it("should return type", function () {
+    $typeRule1 = new TypeRule(DataType::INT);
+    $typeRule2 = new TypeRule(DataType::STRING);
+
+    expect($typeRule1->getType())->toBe(DataType::INT);
+    expect($typeRule2->getType())->toBe(DataType::STRING);
+});

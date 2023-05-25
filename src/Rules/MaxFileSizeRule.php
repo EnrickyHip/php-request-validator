@@ -26,4 +26,9 @@ class MaxFileSizeRule extends ValidationRule
 
         return $value->getSize() <= $this->size;
     }
+
+    public function getSize(): int
+    {
+        return $this->size;
+    }
 }

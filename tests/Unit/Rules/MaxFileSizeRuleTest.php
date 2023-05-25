@@ -10,6 +10,11 @@ it("should not be a major rule", function () {
     expect($this->rule->isMajor())->toBeFalse();
 });
 
+it("should get max size", function (int $size) {
+    $rule = new MaxFileSizeRule($size);
+    expect($rule->getSize())->toBe($size);
+})->with([20000, 24234, 300000, 123123, 4000, 2001]);
+
 it("should return the default error message", function () {
     expect($this->rule->getMessage())->toBe("file :attributeName size is bigger than maximum."); //TODO melhorar isso posteriormente. algumas strings não preciam de aspas.
 });
