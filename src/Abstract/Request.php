@@ -21,24 +21,6 @@ abstract class Request
      *
      * @return ValidatorInterface[] An array of validator instances.
      *
-     * ```php
-     * class YourRequest extends Request
-     *    {
-     *        public function rules(array $data): array
-     *        {
-     *            $nameValidator = (new FieldValidator($data, "name"))
-     *                ->isRequired()
-     *                ->type(DataType::STRING)
-     *                ->addRule(new MaxRule(150, "too long name!"));
-     *
-     *            $activeValidator = (new FieldValidator($data, "email"))
-     *                ->isRequired()
-     *               ->type(DataType::STRING)
-     *                ->addRule(new IsEmailRule(":fieldValue is not a valid email"));
-     *            return [$nameValidator, $emailValidator];
-     *        }
-     *    }
-     * ```
      */
     abstract public function rules(): array;
 

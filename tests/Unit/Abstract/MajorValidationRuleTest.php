@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Enricky\RequestValidator\Abstract\FieldInterface;
+use Enricky\RequestValidator\Abstract\AttributeInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
 class MajorTestValidationRule extends ValidationRule
 {
-    protected string $message = "the field :fieldName with value :fieldValue is not valid";
+    protected string $message = "the field :attributeName with value :attributeValue is not valid";
 
     public function validate(mixed $value): bool
     {
@@ -30,33 +30,33 @@ it("should return custom message", function () {
 });
 
 it("should return custom default error message", function () {
-    expect($this->testRule->getMessage())->toBe("the field :fieldName with value :fieldValue is not valid");
+    expect($this->testRule->getMessage())->toBe("the field :attributeName with value :attributeValue is not valid");
 });
 
 it("should be a major rule", function () {
     expect($this->testRule->isMajor())->toBeTrue();
 });
 
-it("should replace name and value params on message", function (FieldInterface $field) {
+it("should replace name and value params on message", function (AttributeInterface $field) {
     $fieldName = $field->getName();
     $fieldValue = $field->getValue();
 
     expect($this->testRule->resolveMessage($field))->toBe("the field '$fieldName' with value '$fieldValue' is not valid");
 })->with([
-    fn () => new FieldMock("name", "Enricky"),
-    fn () => new FieldMock("email", "enricky@email.com"),
+    fn () => new AttributeMock("name", "Enricky"),
+    fn () => new AttributeMock("email", "enricky@email.com"),
 ]);
 
-it("should replace non string value to a string representation", function (FieldInterface $field, string $representation) {
+it("should replace non string value to a string representation", function (AttributeInterface $field, string $representation) {
     $fieldName = $field->getName();
 
     expect($this->testRule->resolveMessage($field))->toBe("the field '$fieldName' with value $representation is not valid");
 })->with([
-    [new FieldMock("int", 1), "1"],
-    [new FieldMock("float", 10.5), "10.5"],
-    [new FieldMock("true", true), "true"],
-    [new FieldMock("false", false), "false"],
-    [new FieldMock("array", []), "[array]"],
-    [new FieldMock("object", new stdClass()), "{object}"],
-    [new FieldMock("null", null), "null"],
+    [new AttributeMock("int", 1), "1"],
+    [new AttributeMock("float", 10.5), "10.5"],
+    [new AttributeMock("true", true), "true"],
+    [new AttributeMock("false", false), "false"],
+    [new AttributeMock("array", []), "[array]"],
+    [new AttributeMock("object", new stdClass()), "{object}"],
+    [new AttributeMock("null", null), "null"],
 ]);

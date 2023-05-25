@@ -11,7 +11,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->minRule->getMessage())->toBe("field :fieldName length is lower than :min");
+    expect($this->minRule->getMessage())->toBe("field :attributeName length is lower than :min");
 });
 
 it("should return the correct error message", function () {
@@ -40,6 +40,6 @@ it("should validate if value length is bigger than or equal the maximum", functi
 ]);
 
 it("should replace :min parameter with given value", function () {
-    $message = $this->minRule->resolveMessage(new FieldMock());
+    $message = $this->minRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' length is lower than 10");
 });

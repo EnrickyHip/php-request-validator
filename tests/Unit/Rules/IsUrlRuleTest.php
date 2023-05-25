@@ -41,7 +41,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->urlRule->getMessage())->toBe("field :fieldName is not a valid url");
+    expect($this->urlRule->getMessage())->toBe("field :attributeName is not a valid url");
 });
 
 it("should return the custom error message", function () {

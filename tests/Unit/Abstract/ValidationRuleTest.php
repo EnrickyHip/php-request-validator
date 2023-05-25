@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Enricky\RequestValidator\Abstract\FieldInterface;
+use Enricky\RequestValidator\Abstract\AttributeInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
 class TestRule extends ValidationRule
@@ -23,7 +23,7 @@ it("should return custom message if sent", function () {
 });
 
 it("should return default error message if not sent", function () {
-    expect($this->testRule->getMessage())->toBe("field :fieldName is invalid");
+    expect($this->testRule->getMessage())->toBe("field :attributeName is invalid");
 });
 
 it("should return false when validation fails", function () {
@@ -35,10 +35,10 @@ it("should return true when validation fails", function () {
 });
 
 
-it("should replace name param on message", function (FieldInterface $field) {
+it("should replace name param on message", function (AttributeInterface $field) {
     $fieldName = $field->getName();
     expect($this->testRule->resolveMessage($field))->toBe("field '$fieldName' is invalid");
 })->with([
-    fn () => new FieldMock("name", "Enricky"),
-    fn () => new FieldMock("email", "enricky@email.com"),
+    fn () => new AttributeMock("name", "Enricky"),
+    fn () => new AttributeMock("email", "enricky@email.com"),
 ]);

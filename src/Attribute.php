@@ -2,9 +2,9 @@
 
 namespace Enricky\RequestValidator;
 
-use Enricky\RequestValidator\Abstract\FieldInterface;
+use Enricky\RequestValidator\Abstract\AttributeInterface;
 
-class Field implements FieldInterface
+class Attribute implements AttributeInterface
 {
     private string $name;
     private mixed $value = null;

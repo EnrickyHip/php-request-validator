@@ -1,12 +1,14 @@
 <?php
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
-use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\FieldValidator;
+use Enricky\RequestValidator\Validator;
 
 beforeEach(function () {
-    $field = new FieldMock();
-    $this->fieldValidator = new FieldValidator($field);
+    $field = new AttributeMock();
+    $this->fieldValidator = new class($field) extends Validator
+    {
+    };
 });
 
 function createRule(bool $valid, bool $isMajor = false): ValidationRule
@@ -32,9 +34,9 @@ function createRule(bool $valid, bool $isMajor = false): ValidationRule
 }
 
 it("should get field", function () {
-    $field = new FieldMock();
+    $field = new AttributeMock();
     $fieldValidator = new FieldValidator($field);
-    expect($fieldValidator->getField())->toBe($field);
+    expect($fieldValidator->getAttribute())->toBe($field);
 });
 
 it("should be valid if no rule was sent", function () {
@@ -100,7 +102,7 @@ it("should only show one message if a major rule is invalid", function () {
 
 
 it("should validate if value is null and all major rules passed (ignore all simple rules)", function () {
-    $field = new FieldMock("name", null);
+    $field = new AttributeMock("name", null);
     $fieldValidator = (new FieldValidator($field))
         ->addRule(createRule(true, true))
         ->addRule(createRule(true, true))
@@ -112,20 +114,20 @@ it("should validate if value is null and all major rules passed (ignore all simp
 });
 
 it("should validate if field is required and is not null", function () {
-    $field = new FieldMock("name", "value");
+    $field = new AttributeMock("name", "value");
     $fieldValidator = (new FieldValidator($field))->isRequired();
 
     expect($fieldValidator->validate())->toBeTrue();
 });
 
 test("isRequired should return self", function () {
-    $field = new FieldMock("name", "value");
+    $field = new AttributeMock("name", "value");
     $fieldValidator = new FieldValidator($field);
     expect($fieldValidator->isRequired())->toBe($fieldValidator);
 });
 
 it("should not validate if field is required but value is null", function () {
-    $field = new FieldMock("name", null);
+    $field = new AttributeMock("name", null);
     $fieldValidator1 = (new FieldValidator($field))->isRequired();
 
     expect($fieldValidator1->validate())->toBeFalse();
@@ -138,8 +140,8 @@ it("should not validate if field is required but value is null", function () {
 });
 
 it("should be required if condition is true", function () {
-    $field = new FieldMock("name", "value");
-    $nullField = new FieldMock("name", null);
+    $field = new AttributeMock("name", "value");
+    $nullField = new AttributeMock("name", null);
 
     $fieldValidator1 = (new FieldValidator($field))->isRequiredIf(true);
     expect($fieldValidator1->validate())->toBeTrue();
@@ -154,8 +156,8 @@ it("should be required if condition is true", function () {
 });
 
 it("should not be required if condition is false", function () {
-    $field = new FieldMock("name", "value");
-    $nullField = new FieldMock("name", null);
+    $field = new AttributeMock("name", "value");
+    $nullField = new AttributeMock("name", null);
 
     $fieldValidator1 = (new FieldValidator($nullField))->isRequiredIf(false);
     expect($fieldValidator1->validate())->toBeTrue();
@@ -165,15 +167,15 @@ it("should not be required if condition is false", function () {
 });
 
 test("isRequiredIf should return self", function () {
-    $field = new FieldMock("name", "value");
+    $field = new AttributeMock("name", "value");
     $fieldValidator = new FieldValidator($field);
 
     expect($fieldValidator->isRequiredIf(true))->toBe($fieldValidator);
 });
 
 it("should be prohibited if condition is true", function () {
-    $field = new FieldMock("name", "value");
-    $nullField = new FieldMock("name", null);
+    $field = new AttributeMock("name", "value");
+    $nullField = new AttributeMock("name", null);
 
     $fieldValidator1 = (new FieldValidator($field))->prohibitedIf(true);
     expect($fieldValidator1->validate())->toBeFalse();
@@ -188,8 +190,8 @@ it("should be prohibited if condition is true", function () {
 });
 
 it("should not be prohibited if condition is false", function () {
-    $field = new FieldMock("name", "value");
-    $nullField = new FieldMock("name", null);
+    $field = new AttributeMock("name", "value");
+    $nullField = new AttributeMock("name", null);
 
     $fieldValidator1 = (new FieldValidator($field))->prohibitedIf(false);
     expect($fieldValidator1->validate())->toBeTrue();
@@ -197,28 +199,3 @@ it("should not be prohibited if condition is false", function () {
     $fieldValidator2 = (new FieldValidator($nullField))->prohibitedIf(false);
     expect($fieldValidator2->validate())->toBeTrue();
 });
-
-it("should validate if type is correct", function (DataType|string $type, mixed $value) {
-    $field = new FieldMock("name", $value);
-    $fieldValidator = (new FieldValidator($field))->type($type);
-
-    expect($fieldValidator->validate())->toBeTrue();
-})->with("correct_types");
-
-it("should not validate if type is incorrect with default message", function (DataType|string $type, mixed $value) {
-    $field = new FieldMock("name", $value);
-    $fieldValidator = (new FieldValidator($field))->type($type);
-
-    $typeName = $type instanceof DataType ? $type->value : strtolower($type);
-
-    expect($fieldValidator->validate())->toBeFalse();
-    expect($fieldValidator->getErrors())->toEqual(["field 'name' is not of type '$typeName'"]);
-})->with("incorrect_types");
-
-it("should not validate if type is incorrect with custom message", function (DataType|string $type, mixed $value) {
-    $field = new FieldMock("name", $value);
-    $fieldValidator = (new FieldValidator($field))->type($type, "incorrect type");
-
-    expect($fieldValidator->validate())->toBeFalse();
-    expect($fieldValidator->getErrors())->toEqual(["incorrect type"]);
-})->with("incorrect_types");

@@ -41,7 +41,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->emailRule->getMessage())->toBe("field :fieldName is not a valid email address");
+    expect($this->emailRule->getMessage())->toBe("field :attributeName is not a valid email address");
 });
 
 it("should return the custom error message", function () {

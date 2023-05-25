@@ -11,7 +11,7 @@ it("should not be a major rule", function () {
 
 it("should return the default error message", function () {
     $typeRule = new TypeRule(DataType::INT);
-    expect($typeRule->getMessage())->toBe("field :fieldName is not of type :type");
+    expect($typeRule->getMessage())->toBe("field :attributeName is not of type :type");
 });
 
 it("should return the custom error message", function () {
@@ -41,6 +41,6 @@ it("should not validate if value type is not correct", function (DataType|string
 
 it("should replace :type parameter with the correct type name", function (DataType $type) {
     $typeRule = new TypeRule($type);
-    $message = $typeRule->resolveMessage(new FieldMock());
+    $message = $typeRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' is not of type '{$type->value}'");
 })->with(DataType::cases());

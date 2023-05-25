@@ -11,7 +11,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class IsProhibitedRule extends ValidationRule
 {
     private bool $condition;
-    protected string $message = "field :fieldName is prohibited";
+    protected string $message = "field :attributeName is prohibited";
 
     /**
      * Create a new IsProhibitedRule instance.

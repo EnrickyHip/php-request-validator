@@ -56,7 +56,7 @@ it("should not be a major rule", function () {
 
 it("should return the default error message if not sent", function () {
     $isDateTimeRule = new IsDateTimeRule();
-    expect($isDateTimeRule->getMessage())->toBe("field :fieldName is not a valid date");
+    expect($isDateTimeRule->getMessage())->toBe("field :attributeName is not a valid date");
 });
 
 it("should return the correct error message if sent", function () {

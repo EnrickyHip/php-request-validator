@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Field;
+use Enricky\RequestValidator\Attribute;
 
 $data = [
     "name" => "Enricky",
@@ -12,22 +12,22 @@ $data = [
 ];
 
 it("should return field name", function (string $name) use ($data) {
-    $field = new Field($data, $name);
+    $field = new Attribute($data, $name);
     expect($field->getName())->toBe($name);
 })->with(array_keys($data));
 
 it("should return field value", function (string $name) use ($data) {
-    $field = new Field($data, $name);
+    $field = new Attribute($data, $name);
     expect($field->getValue())->toBe($data[$name]);
 })->with(array_keys($data));
 
 it("should set value as null if not sent", function ($name) use ($data) {
-    $field = new Field($data, $name);
+    $field = new Attribute($data, $name);
     expect($field->getValue())->toBeNull();
 })->with(["password", "", "key"]);
 
 it("should set value as null if empty string sent", function () {
     $data = ["value" => ""];
-    $field = new Field($data, "value");
+    $field = new Attribute($data, "value");
     expect($field->getValue())->toBeNull();
 });

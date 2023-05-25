@@ -1,8 +1,8 @@
 <?php
 
-use Enricky\RequestValidator\Abstract\FieldInterface;
+use Enricky\RequestValidator\Abstract\AttributeInterface;
 
-class FieldMock implements FieldInterface
+class AttributeMock implements AttributeInterface
 {
     public function __construct(
         private string $name = "name",

@@ -36,7 +36,7 @@ it("should not be a major rule", function () {
 
 it("should return the default error message", function () {
     $enumRule = new ValidEnumRule(BackedEnumMock::class);
-    expect($enumRule->getMessage())->toBe("field :fieldName is not a part of the enum :enum");
+    expect($enumRule->getMessage())->toBe("field :attributeName is not a part of the enum :enum");
 });
 
 it("should return the custom error message", function () {
@@ -92,7 +92,7 @@ it("should not validate if value is part of the enum", function (string $enumCla
 
 it("should replace :enum parameter with the enum class name", function (string $enumClass) {
     $enumRule = new ValidEnumRule($enumClass);
-    $message = $enumRule->resolveMessage(new FieldMock());
+    $message = $enumRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' is not a part of the enum '$enumClass'");
 })->with([BackedEnumMock::class, DataType::class]);
 

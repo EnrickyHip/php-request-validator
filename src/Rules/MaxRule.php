@@ -10,7 +10,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class MaxRule extends ValidationRule
 {
     private int $max;
-    protected string $message = "field :fieldName length is bigger than :max";
+    protected string $message = "field :attributeName length is bigger than :max";
 
     /**
      * Create a new MaxRule instance.

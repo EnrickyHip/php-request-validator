@@ -12,7 +12,7 @@ use Enricky\RequestValidator\Exceptions\InvalidEnumException;
 class ValidEnumRule extends ValidationRule
 {
     private string $enumClass;
-    protected string $message = "field :fieldName is not a part of the enum :enum";
+    protected string $message = "field :attributeName is not a part of the enum :enum";
 
     /**
      * Create a new ValidEnumRule instance.

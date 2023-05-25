@@ -11,7 +11,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->maxRule->getMessage())->toBe("field :fieldName length is bigger than :max");
+    expect($this->maxRule->getMessage())->toBe("field :attributeName length is bigger than :max");
 });
 
 it("should return the curtom error message", function () {
@@ -40,6 +40,6 @@ it("should not validate if value length is bigger than the maximum", function (s
 ]);
 
 it("should replace :min parameter with given value", function () {
-    $message = $this->maxRule->resolveMessage(new FieldMock());
+    $message = $this->maxRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' length is bigger than 10");
 });

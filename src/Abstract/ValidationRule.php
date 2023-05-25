@@ -8,7 +8,7 @@ namespace Enricky\RequestValidator\Abstract;
 abstract class ValidationRule
 {
     /** @var string $message Default error message for the validation rule. */
-    protected string $message = "field :fieldName is invalid";
+    protected string $message = "field :attributeName is invalid";
 
     /** @var mixed[] $params Array of params to be replaced in the error message. */
     protected array $params = [];
@@ -59,9 +59,9 @@ abstract class ValidationRule
     /**
      * @internal
      * Resolve the error message by replacing placeholders with actual values.
-     * The two placeholders `:fieldName` and `:fieldValue` are built in and will be replaced automatically.
+     * The two placeholders `:attributeName` and `:attributeValue` are built in and will be replaced automatically.
      *
-     * @param FieldInterface $field The field being validated.
+     * @param AttributeInterface $attribute The attribute being validated.
      * @return string The resolved error message.
      *
      * If you want to create your own placeholders, set the property `$this->params` inside your constructor and add the placeholders to the property `$this->message`:
@@ -69,7 +69,7 @@ abstract class ValidationRule
      * ```php
      * class YourRule extends ValidationRule
      * {
-     *      protected string $message = "Field :fieldName is invalid with parameters :param1 and :param2";
+     *      protected string $message = "Attribute :attributeName is invalid with parameters :param1 and :param2";
      *      private string $param1;
      *      private string $param2;
      *
@@ -89,7 +89,7 @@ abstract class ValidationRule
      * This way, the placeholders `:param1` and `:param2` will be replaced by the respective values.
      * The use of colons in the beggining is not mandatory, but recommended.
      */
-    final public function resolveMessage(FieldInterface $field): string
+    final public function resolveMessage(AttributeInterface $attribute): string
     {
         $stringifiedParams = array_map(function ($value) {
             return $this->stringifyParam($value);
@@ -97,8 +97,8 @@ abstract class ValidationRule
 
         $params = [
             ...$stringifiedParams,
-            ":fieldName" => $this->stringifyParam($field->getName()),
-            ":fieldValue" => $this->stringifyParam($field->getValue()),
+            ":attributeName" => $this->stringifyParam($attribute->getName()),
+            ":attributeValue" => $this->stringifyParam($attribute->getValue()),
         ];
 
         return $this->replaceParams($params);
