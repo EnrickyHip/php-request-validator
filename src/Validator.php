@@ -30,7 +30,7 @@ abstract class Validator implements ValidatorInterface
         $this->attribute = $attribute;
     }
 
-    public function isRequired(?string $msg = null): self
+    public function isRequired(?string $msg = null): static
     {
         $rule = new IsRequiredRule($msg);
         $this->addRule($rule);
@@ -38,7 +38,7 @@ abstract class Validator implements ValidatorInterface
     }
 
     /** @param bool|Closure(): bool $condition  */
-    public function isRequiredIf(bool|Closure $condition, ?string $msg = null): self
+    public function isRequiredIf(bool|Closure $condition, ?string $msg = null): static
     {
         $rule = new IsRequiredRule($msg, $condition);
         $this->addRule($rule);
@@ -46,14 +46,14 @@ abstract class Validator implements ValidatorInterface
     }
 
     /** @param bool|Closure(): bool $condition  */
-    public function prohibitedIf(bool|Closure $condition, ?string $msg = null): self
+    public function prohibitedIf(bool|Closure $condition, ?string $msg = null): static
     {
         $rule = new IsProhibitedRule($condition, $msg);
         $this->addRule($rule);
         return $this;
     }
 
-    public function addRule(ValidationRule $rule): self
+    public function addRule(ValidationRule $rule): static
     {
         if ($rule->isMajor()) {
             $this->majorRules[] = $rule;
