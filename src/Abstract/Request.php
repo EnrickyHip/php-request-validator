@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Abstract;
 
+use Enricky\RequestValidator\Attribute;
+use Enricky\RequestValidator\FieldValidator;
+use Enricky\RequestValidator\File;
+use Enricky\RequestValidator\FileValidator;
+
 /** Abstract class to represent a request validation.  */
 abstract class Request
 {
@@ -53,5 +58,34 @@ abstract class Request
         }
 
         return array_unique($errors);
+    }
+
+    final public function validateField(string $name)
+    {
+        $value = null;
+
+        if (!$this->checkEmpty($name)) {
+            $value = $this->data[$name];
+        }
+
+        $attriubte = new Attribute($name, $value);
+        return new FieldValidator($attriubte);
+    }
+
+    final public function validateFile(string $name)
+    {
+        $value = null;
+
+        if (!$this->checkEmpty($name)) {
+            $value = new File($this->data[$name]);
+        }
+
+        $attriubte = new Attribute($name, $value);
+        return new FileValidator($attriubte);
+    }
+
+    private function checkEmpty(mixed $name)
+    {
+        return !isset($this->data[$name]) || $this->data[$name] === "";
     }
 }

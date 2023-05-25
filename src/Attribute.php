@@ -7,15 +7,12 @@ use Enricky\RequestValidator\Abstract\AttributeInterface;
 class Attribute implements AttributeInterface
 {
     private string $name;
-    private mixed $value = null;
+    private mixed $value;
 
-    public function __construct(array $data, string $name)
+    public function __construct(string $name, mixed $value)
     {
         $this->name = $name;
-
-        if (isset($data[$name]) && $data[$name] !== "") {
-            $this->value = $data[$name];
-        }
+        $this->value = $value;
     }
 
     public function getName(): string
