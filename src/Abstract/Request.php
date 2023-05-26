@@ -12,6 +12,7 @@ use Enricky\RequestValidator\FileValidator;
 /** Abstract class to represent a request validation.  */
 abstract class Request
 {
+    private $nullValues = ["", "undefined", "null"];
     protected array $data;
 
     public function __construct(array $data)
@@ -60,11 +61,11 @@ abstract class Request
         return array_unique($errors);
     }
 
-    final public function validateField(string $name)
+    final public function validateField(string $name): FieldValidator
     {
         $value = null;
 
-        if (!$this->checkEmpty($name)) {
+        if (!$this->isNull($name)) {
             $value = $this->data[$name];
         }
 
@@ -72,11 +73,11 @@ abstract class Request
         return new FieldValidator($attriubte);
     }
 
-    final public function validateFile(string $name)
+    final public function validateFile(string $name): FileValidator
     {
         $value = null;
 
-        if (!$this->checkEmpty($name)) {
+        if (!$this->isNull($name)) {
             $value = new File($this->data[$name]);
         }
 
@@ -84,8 +85,8 @@ abstract class Request
         return new FileValidator($attriubte);
     }
 
-    private function checkEmpty(mixed $name)
+    private function isNull(mixed $name): bool
     {
-        return !isset($this->data[$name]) || $this->data[$name] === "";
+        return !isset($this->data[$name]) || in_array($this->data[$name], $this->nullValues);
     }
 }

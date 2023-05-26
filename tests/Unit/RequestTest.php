@@ -26,7 +26,7 @@ function createValidator(bool $valid, array $errors)
             return $this->errors;
         }
 
-        public function addRule(ValidationRule $rule): self
+        public function addRule(ValidationRule $rule): static
         {
             return $this;
         }
@@ -139,14 +139,14 @@ it("should set null if key does not exist on call validateField or validateFile"
     expect($validator2->getAttribute()->getValue())->toBe(null);
 });
 
-it("should set null if value is an empty string call validateField or validateFile", function () {
+it("should set null on string call validateField or validateFile", function (mixed $value) {
     $request = createRequest([
         createValidator(false, []),
-    ], ["name" => ""]);
+    ], ["name" => $value]);
 
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
 
     expect($validator1->getAttribute()->getValue())->toBe(null);
     expect($validator2->getAttribute()->getValue())->toBe(null);
-});
+})->with(["", "undefined", "null", null]);
