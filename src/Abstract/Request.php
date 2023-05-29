@@ -13,10 +13,11 @@ use Enricky\RequestValidator\FileValidator;
 abstract class Request
 {
     protected array $data;
+    private $nullables = ["null", "", "undefined"];
 
-    public function __construct(array $data)
+    public function __construct(array &$data)
     {
-        $this->data = $data;
+        $this->data = &$data;
     }
 
     /**
@@ -62,8 +63,6 @@ abstract class Request
 
     final public function validateField(string $name)
     {
-        $value = null;
-
         if (!$this->checkEmpty($name)) {
             $value = $this->data[$name];
         }
@@ -74,8 +73,6 @@ abstract class Request
 
     final public function validateFile(string $name)
     {
-        $value = null;
-
         if (!$this->checkEmpty($name)) {
             $value = new File($this->data[$name]);
         }
@@ -86,6 +83,14 @@ abstract class Request
 
     private function checkEmpty(mixed $name)
     {
-        return !isset($this->data[$name]) || $this->data[$name] === "";
+        $isNotSent = !isset($this->data[$name]);
+        $isNullable = in_array($this->data[$name], $this->nullables);
+
+        if ($isNotSent || $isNullable) {
+            $this->data[$name] = null;
+            return true;
+        }
+
+        return false;
     }
 }
