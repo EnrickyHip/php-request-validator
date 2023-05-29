@@ -63,6 +63,8 @@ abstract class Request
 
     final public function validateField(string $name)
     {
+        $value = null;
+
         if (!$this->checkEmpty($name)) {
             $value = $this->data[$name];
         }
@@ -73,7 +75,9 @@ abstract class Request
 
     final public function validateFile(string $name)
     {
-        if (!$this->checkEmpty($name)) {
+        $value = null;
+
+        if (!$this->checkEmpty($name) && is_array($this->data[$name])) {
             $value = new File($this->data[$name]);
         }
 
@@ -84,7 +88,7 @@ abstract class Request
     private function checkEmpty(mixed $name)
     {
         $isNotSent = !isset($this->data[$name]);
-        $isNullable = in_array($this->data[$name], $this->nullables);
+        $isNullable = in_array($this->data[$name], $this->nullables, true);
 
         if ($isNotSent || $isNullable) {
             $this->data[$name] = null;

@@ -213,9 +213,8 @@ it("should maintain values if they are not nullables on validateField", function
     ], $data);
 
     $request->validateField("name");
-
     expect($data["name"])->toBe($value);
-})->with(["not null", "0", 0, fn () => []]);
+})->with(["not null", "0", 0, fn () => [], false, true]);
 
 it("should maintain values if they are not nullables on validateFile", function (mixed $value) {
     $data = ["name" => $value];
@@ -224,6 +223,5 @@ it("should maintain values if they are not nullables on validateFile", function 
     ], $data);
 
     $request->validateFile("name");
-
     expect($data["name"])->toBe($value);
-})->with(["not null", "0", 0, fn () => []]);
+})->with(["not null", "0", 0, fn () => [], false, true]);
