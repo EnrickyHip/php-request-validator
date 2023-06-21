@@ -9,8 +9,9 @@ use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\File;
 use Enricky\RequestValidator\FileValidator;
 
+//TODO alterar o nome dessa classe para RequestValidator para evitar confusão
 /** Abstract class to represent a request validation.  */
-abstract class Request
+abstract class RequestValidator
 {
     protected array $data;
     private $nullables = ["null", "", "undefined"];

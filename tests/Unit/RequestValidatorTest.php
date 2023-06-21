@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Abstract\Request;
+use Enricky\RequestValidator\Abstract\RequestValidator;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Abstract\ValidatorInterface;
 use Enricky\RequestValidator\FieldValidator;
@@ -36,7 +36,7 @@ function createValidator(bool $valid, array $errors)
 /** @param ValidatorInterface[] $validators */
 function createRequest(array $validators, array &$data)
 {
-    return new class($validators, $data) extends Request
+    return new class($validators, $data) extends RequestValidator
     {
         public function __construct(private array $validators, array &$data)
         {
