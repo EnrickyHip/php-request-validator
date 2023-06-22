@@ -126,6 +126,11 @@ enum FileType: string
         );
     }
 
+    /**
+     * Get an enum instance from string extensions. Allowed formats are: `.ext` and `ext`
+     * @return FileType The enum instance
+     * @throws InvalidExtensionException If extension is not found
+     */
     public static function getFromExtension(string $extension): self
     {
         if ($extension[0] !== ".") {
@@ -133,7 +138,6 @@ enum FileType: string
         }
 
         foreach (self::cases() as $type) {
-            var_dump($type->value);
             $typeExtension = $type->getExtension();
             if (is_array($typeExtension)) {
                 if (in_array($extension, $typeExtension)) {
@@ -150,6 +154,10 @@ enum FileType: string
         throw new InvalidExtensionException("extension '$extension' does not exists");
     }
 
+    /**
+     * Try to get an enum instance from string extensions. Allowed formats are: `.ext` and `ext`
+     * @return FileType|false The enum instance if found, false otherwise
+     */
     public static function tryFromExtension(string $extension): self|false
     {
         try {
@@ -159,7 +167,10 @@ enum FileType: string
         }
     }
 
-    /** @return string|string[] */
+    /**
+     * Get type extensions
+     * @return string|string[] The extension or array of extensions in the format `.ext`
+     */
     public function getExtension(): string|array
     {
         return match ($this) {
