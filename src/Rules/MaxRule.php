@@ -29,10 +29,14 @@ class MaxRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        if (!is_string($value)) {
-            return false;
+        if (is_int($value) || is_float($value)) {
+            return $value <= $this->max;
         }
 
-        return mb_strlen($value) <= $this->max;
+        if (is_string($value)) {
+            return mb_strlen($value) <= $this->max;
+        }
+
+        return false;
     }
 }

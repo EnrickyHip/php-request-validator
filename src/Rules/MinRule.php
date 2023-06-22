@@ -29,10 +29,14 @@ class MinRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        if (!is_string($value)) {
-            return false;
+        if (is_int($value) || is_float($value)) {
+            return $value >= $this->min;
         }
 
-        return mb_strlen($value) >= $this->min;
+        if (is_string($value)) {
+            return mb_strlen($value) >= $this->min;
+        }
+
+        return false;
     }
 }

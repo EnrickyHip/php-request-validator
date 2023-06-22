@@ -43,3 +43,11 @@ it("should replace :min parameter with given value", function () {
     $message = $this->minRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' length is lower than 10");
 });
+
+it("should not validate if value is a number lower than the minimum", function (int|float $number) {
+    expect($this->minRule->validate($number))->toBeFalse();
+})->with([9.9, 9, 1]);
+
+it("should validate if value is a number higher or equal than the minimum", function (int|float $number) {
+    expect($this->minRule->validate($number))->toBeTrue();
+})->with([10, 10.0, 11, 10.1, 20]);

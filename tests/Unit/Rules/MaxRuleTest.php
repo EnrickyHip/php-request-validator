@@ -19,9 +19,9 @@ it("should return the curtom error message", function () {
     expect($maxRule->getMessage())->toBe("too big!");
 });
 
-it("should not validate if not sent a string", function (mixed $value) {
+it("should not validate if not sent a string or a number", function (mixed $value) {
     expect($this->maxRule->validate($value))->toBeFalse();
-})->with([1, true, [1, 2, 3], new stdClass()]);
+})->with([true, fn () => [1, 2, 3], new stdClass()]);
 
 it("should validate if value length is less or equal than the maximum", function (string $value) {
     expect($this->maxRule->validate($value))->toBeTrue();
@@ -43,3 +43,11 @@ it("should replace :min parameter with given value", function () {
     $message = $this->maxRule->resolveMessage(new AttributeMock());
     expect($message)->toBe("field 'name' length is bigger than 10");
 });
+
+it("should not validate if value is a number higher than the maximum", function (int|float $number) {
+    expect($this->maxRule->validate($number))->toBeFalse();
+})->with([11, 10.1, 12, 20]);
+
+it("should validate if value is a number lower or equal than the maximum", function (int|float $number) {
+    expect($this->maxRule->validate($number))->toBeTrue();
+})->with([10, 10.0, 9, 9.9, 1]);
