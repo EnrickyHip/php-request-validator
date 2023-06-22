@@ -1,6 +1,7 @@
 <?php
 
 use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Exceptions\InvalidExtensionException;
 use Enricky\RequestValidator\Rules\FileTypeRule;
 
 beforeEach(function () {
@@ -15,7 +16,7 @@ it("should return the default error message", function () {
     expect($this->rule->getMessage())->toBe("file :attributeName has an invalid type.");
 });
 
-it("should validate if type is valid", function (array|FileType $types, FileType $type) {
+it("should validate if type is valid", function (array|string|FileType $types, FileType $type) {
     $rule = new FileTypeRule($types);
     $file = new FileMock(type: $type);
     expect($rule->validate($file))->toBeTrue();
@@ -33,9 +34,18 @@ it("should validate if type is valid", function (array|FileType $types, FileType
     [FileType::text(), FileType::JS],
     [FileType::audio(), FileType::MP3],
     [FileType::audio(), FileType::AAC],
+    ["mp3", FileType::MP3],
+    [".mp3", FileType::MP3],
+    ["avi", FileType::AVI],
+    [".avi", FileType::AVI],
+    [["txt", "avi"], FileType::AVI],
+    [["txt", "avi"], FileType::TXT],
+    [[".exe", ".js"], FileType::EXE],
+    [[".exe", ".js"], FileType::JS],
+    [[".xls", "mp4", FileType::PNG], FileType::PNG],
 ]);
 
-it("should not validate if type is invalid", function (array|FileType $types, FileType $type) {
+it("should not validate if type is invalid", function (array|string|FileType $types, FileType $type) {
     $rule = new FileTypeRule($types);
     $file = new FileMock(type: $type);
     expect($rule->validate($file))->toBeFalse();
@@ -53,7 +63,21 @@ it("should not validate if type is invalid", function (array|FileType $types, Fi
     [FileType::text(), FileType::MP4],
     [FileType::audio(), FileType::HTML],
     [FileType::audio(), FileType::JS],
+    ["mp3", FileType::AVI],
+    [".mp3", FileType::PNG],
+    ["avi", FileType::JS],
+    [".avi", FileType::TXT],
+    [["txt", "avi"], FileType::JPEG],
+    [["txt", "avi"], FileType::TS],
+    [[".exe", ".js"], FileType::PHP],
+    [[".exe", ".js"], FileType::CSS],
+    [[".xls", "mp4", FileType::PNG], FileType::HTML],
 ]);
+
+it("should throw InvalidExtensionException if extension does not exists", function (array|string $types) {
+    $closure = fn () => new FileTypeRule($types);
+    expect($closure)->toThrow(InvalidExtensionException::class);
+})->with(["", ".ext", "invalid", ".invalid", fn () => [".txt", "js", ".invalid"]]);
 
 it("should not validate if value is not a File Instance", function (mixed $value) {
     expect($this->rule->validate($value))->toBeFalse();

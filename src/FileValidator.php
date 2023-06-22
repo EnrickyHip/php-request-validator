@@ -18,8 +18,8 @@ class FileValidator extends Validator
         $this->rules[] = new IsFileRule($message);
     }
 
-    /** @param FileType[]|FileType $types */
-    public function type(array|FileType $types, ?string $message = null): self
+    /** @param (FileType|string)[]|string|FileType $types */
+    public function type(array|string|FileType $types, ?string $message = null): self
     {
         $rule = new FileTypeRule($types, $message);
         $this->addRule($rule);

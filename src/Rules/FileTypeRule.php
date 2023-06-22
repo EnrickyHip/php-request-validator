@@ -14,8 +14,8 @@ class FileTypeRule extends ValidationRule
     private array $types;
     protected string $message = "file :attributeName has an invalid type.";
 
-    /** @param FileType[]|FileType $types */
-    public function __construct(array|FileType $types, ?string $message = null)
+    /** @param (FileType|string)[]|FileType|string $types */
+    public function __construct(array|string|FileType $types, ?string $message = null)
     {
         parent::__construct($message);
 
@@ -23,7 +23,13 @@ class FileTypeRule extends ValidationRule
             $types = [$types];
         }
 
-        $this->types = $types;
+        $this->types = array_map(function (string|FileType $type) {
+            if (is_string($type)) {
+                return FileType::getFromExtension($type);
+            }
+
+            return $type;
+        }, $types);
     }
 
     public function validate(mixed $value): bool
