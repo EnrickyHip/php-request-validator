@@ -35,7 +35,7 @@ enum DataType: string
     {
         return match ($this) {
             self::STRING => is_string($value),
-            self::INT => is_int($value),
+            self::INT => is_int($value), //TODO validar se é uma string numérica talvez seria uma boa ideia (talvez criar um strict mode?
             self::FLOAT => is_float($value) || is_int($value),
             self::BOOL => is_bool($value),
         };

@@ -9,7 +9,6 @@ use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\File;
 use Enricky\RequestValidator\FileValidator;
 
-//TODO alterar o nome dessa classe para RequestValidator para evitar confusão
 /** Abstract class to represent a request validation.  */
 abstract class RequestValidator
 {
@@ -62,7 +61,31 @@ abstract class RequestValidator
         return array_unique($errors);
     }
 
-    final public function validateField(string $name)
+    /**
+     * Creates a field validator. This is a builder class that allows you to add validation rules to a field.
+     * @param string $name field key name
+     * @return FieldValidator field validator instance
+     *
+     * Add your desired validation rules for a field:
+     *
+     * ```php
+     *
+     * class MyRequest extends RequestValidator
+     * {
+     *     public function rules(): array
+     *     {
+     *          $emailValidator = $this->validateField("email")
+     *              ->isRequired()
+     *              ->type(DataType::STRING)
+     *              ->addRule(new IsEmailRule("Invalid Email!"));
+     *
+     *           return [$emailValidator];
+     *     }
+     * }
+     *
+     * ```
+     */
+    final public function validateField(string $name): FieldValidator
     {
         $value = null;
 
@@ -74,7 +97,28 @@ abstract class RequestValidator
         return new FieldValidator($attriubte);
     }
 
-    final public function validateFile(string $name)
+    /**
+     * Creates a file validator. This is a builder class that allows you to add validation rules to a file field.
+     * @param string $name field key name
+     * @return FileValidator field validator instance
+     *
+     * Add your desired validation rules for a file:
+     *
+     * ```php
+     * class MyRequest extends RequestValidator
+     * {
+     *     public function rules(): array
+     *     {
+     *         $profileImgValidator = $this->validateFile("profileImg")
+     *             ->type([FileType::PNG, FileType::JPEG], "Invalid file format!")
+     *             ->maxSize(5_000_000, "too big!");
+     *
+     *          return [$profileImgValidator];
+     *     }
+     * }
+     * ```
+     */
+    final public function validateFile(string $name): FileValidator
     {
         $value = null;
 
@@ -86,7 +130,7 @@ abstract class RequestValidator
         return new FileValidator($attriubte);
     }
 
-    private function checkEmpty(mixed $name)
+    private function checkEmpty(mixed $name): bool
     {
         if (!isset($this->data[$name]) || in_array($this->data[$name], $this->nullables, true)) {
             $this->data[$name] = null;
