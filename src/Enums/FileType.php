@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Enums;
 
+use Enricky\RequestValidator\Exceptions\InvalidExtensionException;
+
 /** Enum representation of the data types that can be handled by the validators. */
 enum FileType: string
 {
@@ -72,14 +74,12 @@ enum FileType: string
     case WOFF2 = "font/woff2";
     case XHTML = "application/xhtml+xml";
     case XLS = "application/vnd.ms-excel";
-    case XLSX = "application";
+    case XLSX = "application/vnd.openxmlformats-";
     case XML = "application/xml";
     case XUL = "application/vnd.mozilla.xul+xml";
     case ZIP = "application/zip";
-    case AUDIO_3GP = "audio/3gpp";
-    case VIDEO_3GP = "video/3gpp";
-    case AUDIO_3G2 = "audio/3gpp2";
-    case VIDEO_3G2 = "video/3gpp2";
+    case _3GP = "video/3gpp";
+    case _3G2 = "video/3gpp2";
     case _7Z = "application/x-7z-compressed";
 
     /**
@@ -87,11 +87,10 @@ enum FileType: string
      */
     public static function image(): array
     {
-        return [
-            self::AVIF, self::BMP, self::GIF,
-            self::ICO, self::JPEG, self::PNG,
-            self::SVG, self::TIFF, self::WEBP,
-        ];
+        return array_filter(
+            self::cases(),
+            fn (FileType $type) => str_starts_with($type->value, "image/")
+        );
     }
 
     /**
@@ -99,11 +98,10 @@ enum FileType: string
      */
     public static function audio(): array
     {
-        return [
-            self::AAC, self::MIDI, self::MP3,
-            self::OGA, self::OPUS, self::WAV,
-            self::WEBA, self::AUDIO_3GP, self::AUDIO_3G2,
-        ];
+        return array_filter(
+            self::cases(),
+            fn (FileType $type) => str_starts_with($type->value, "audio/")
+        );
     }
 
     /**
@@ -111,11 +109,10 @@ enum FileType: string
      */
     public static function video(): array
     {
-        return [
-            self::AVI, self::MP4, self::MPEG,
-            self::OGV, self::TS, self::WEBM,
-            self::VIDEO_3GP, self::VIDEO_3G2,
-        ];
+        return array_filter(
+            self::cases(),
+            fn (FileType $type) => str_starts_with($type->value, "video/")
+        );
     }
 
     /**
@@ -123,9 +120,121 @@ enum FileType: string
      */
     public static function text(): array
     {
-        return [
-            self::CSS, self::CSV, self::HTML,
-            self::ICS, self::JS, self::TXT,
-        ];
+        return array_filter(
+            self::cases(),
+            fn (FileType $type) => str_starts_with($type->value, "text/")
+        );
+    }
+
+    public static function getFromExtension(string $extension): self
+    {
+        if ($extension[0] !== ".") {
+            $extension = ".$extension";
+        }
+
+        foreach (self::cases() as $type) {
+            var_dump($type->value);
+            $typeExtension = $type->getExtension();
+            if (is_array($typeExtension)) {
+                if (in_array($extension, $typeExtension)) {
+                    return $type;
+                }
+                continue;
+            }
+
+            if ($typeExtension === $extension) {
+                return $type;
+            }
+        }
+
+        throw new InvalidExtensionException("extension '$extension' does not exists");
+    }
+
+    public static function tryFromExtension(string $extension): self|false
+    {
+        try {
+            return self::getFromExtension($extension);
+        } catch (InvalidExtensionException $exception) {
+            return false;
+        }
+    }
+
+    /** @return string|string[] */
+    public function getExtension(): string|array
+    {
+        return match ($this) {
+            FileType::AAC => ".aac",
+            FileType::ABW => ".abw",
+            FileType::ARC => ".arc",
+            FileType::AVIF => ".avif",
+            FileType::AVI => ".avi",
+            FileType::AZW => ".azw",
+            FileType::BIN => ".bin",
+            FileType::BMP => ".bmp",
+            FileType::BZ => ".bz",
+            FileType::BZ2 => ".bz2",
+            FileType::CDA => ".cda",
+            FileType::CSH => ".csh",
+            FileType::CSS => ".css",
+            FileType::CSV => ".csv",
+            FileType::DOC => ".doc",
+            FileType::DOCX => ".docx",
+            FileType::EOT => ".eot",
+            FileType::EPUB => ".epub",
+            FileType::EXE => ".exe",
+            FileType::GZ => ".gz",
+            FileType::GIF => ".gif",
+            FileType::HTML => ".html",
+            FileType::ICO => ".ico",
+            FileType::ICS => ".ics",
+            FileType::JAR => ".jar",
+            FileType::JPEG => [".jpeg", ".jpg", ".jfif", ".jif"],
+            FileType::JS => ".js",
+            FileType::JSON => ".json",
+            FileType::JSONLD => ".jsonld",
+            FileType::MIDI => ".midi",
+            FileType::MP3 => ".mp3",
+            FileType::MP4 => ".mp4",
+            FileType::MPEG => ".mpeg",
+            FileType::MPKG => ".mpkg",
+            FileType::ODP => ".odp",
+            FileType::ODS => ".ods",
+            FileType::ODT => ".odt",
+            FileType::OGA => ".oga",
+            FileType::OGV => ".ogv",
+            FileType::OGX => ".ogx",
+            FileType::OPUS => ".opus",
+            FileType::OTF => ".otf",
+            FileType::PNG => ".png",
+            FileType::PDF => ".pdf",
+            FileType::PHP => ".php",
+            FileType::PPT => ".ppt",
+            FileType::PPTX => ".pptx",
+            FileType::RAR => ".rar",
+            FileType::RTF => ".rtf",
+            FileType::SH => ".sh",
+            FileType::SVG => ".svg",
+            FileType::TAR => ".tar",
+            FileType::TIFF => ".tiff",
+            FileType::TS => ".ts",
+            FileType::TTF => ".ttf",
+            FileType::TXT => ".txt",
+            FileType::VSD => ".vsd",
+            FileType::WAV => ".wav",
+            FileType::WEBA => ".weba",
+            FileType::WEBM => ".webm",
+            FileType::WEBP => ".webp",
+            FileType::WOFF => ".woff",
+            FileType::WOFF2 => ".woff2",
+            FileType::XHTML => ".xhtml",
+            FileType::XLS => ".xls",
+            FileType::XLSX => ".xlsx",
+            FileType::XML => ".xml",
+            FileType::XUL => ".xul",
+            FileType::ZIP => ".zip",
+            FileType::_3GP => ".3gp",
+            FileType::_3G2 => ".3g2",
+            FileType::_7Z => ".7z",
+        };
     }
 }
