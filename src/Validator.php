@@ -30,25 +30,25 @@ abstract class Validator implements ValidatorInterface
         $this->attribute = $attribute;
     }
 
-    public function isRequired(?string $msg = null): static
+    public function isRequired(?string $message = null): static
     {
-        $rule = new IsRequiredRule($msg);
+        $rule = new IsRequiredRule($message);
         $this->addRule($rule);
         return $this;
     }
 
     /** @param bool|Closure(): bool $condition  */
-    public function isRequiredIf(bool|Closure $condition, ?string $msg = null): static
+    public function isRequiredIf(bool|Closure $condition, ?string $message = null): static
     {
-        $rule = new IsRequiredRule($msg, $condition);
+        $rule = new IsRequiredRule($message, $condition);
         $this->addRule($rule);
         return $this;
     }
 
     /** @param bool|Closure(): bool $condition  */
-    public function prohibitedIf(bool|Closure $condition, ?string $msg = null): static
+    public function prohibitedIf(bool|Closure $condition, ?string $message = null): static
     {
-        $rule = new IsProhibitedRule($condition, $msg);
+        $rule = new IsProhibitedRule($condition, $message);
         $this->addRule($rule);
         return $this;
     }
