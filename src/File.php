@@ -11,15 +11,19 @@ use Enricky\RequestValidator\Enums\FileType;
  */
 class File implements FileInterface
 {
-    private string $name;
-    private string $path;
-    private ?FileType $type;
-    private string $tempName;
-    private int $error;
-    private int $size;
+    private string $name = "";
+    private string $path = "";
+    private ?FileType $type = null;
+    private string $tempName = "";
+    private int $error = UPLOAD_ERR_NO_FILE;
+    private int $size = 0;
 
-    public function __construct(array $file)
+    public function __construct(mixed $file)
     {
+        if (!is_array($file)) {
+            return;
+        }
+
         $this->name = $file["name"] ?? "";
         $this->path = $file["full_path"] ?? "";
         $this->tempName = $file["tmp_name"] ?? "";

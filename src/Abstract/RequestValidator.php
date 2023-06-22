@@ -122,7 +122,7 @@ abstract class RequestValidator
     {
         $value = null;
 
-        if (!$this->checkEmpty($name) && is_array($this->data[$name])) {
+        if (!$this->checkEmpty($name)) {
             $value = new File($this->data[$name]);
         }
 
