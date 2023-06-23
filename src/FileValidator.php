@@ -35,7 +35,7 @@ class FileValidator extends Validator
     public function __construct(AttributeInterface $attribute, ?string $message = null)
     {
         parent::__construct($attribute);
-        $this->rules[] = new IsFileRule($message);
+        $this->addRule(new IsFileRule($message));
     }
 
     /**
