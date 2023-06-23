@@ -242,6 +242,15 @@ it("should maintain values if they are not nullables on validateFile", function 
     expect($data["name"])->toBe($value);
 })->with(["not null", "0", 0, fn () => [], false, true]);
 
+test("validateFile() should add custom rule to IsFileRule", function () {
+    $data = [];
+    $request = createRequest([], $data);
+
+    $fileValidator = $request->validateFile("name", "invalid file");
+    $isFileRule = $fileValidator->getRules()[0];
+    expect($isFileRule->getMessage())->toBe("invalid file");
+});
+
 test("requireOr() should validate if at least one field was sent", function (mixed $value1, mixed $value2, mixed $value3) {
     $data = [];
     $request = createRequest([], $data);

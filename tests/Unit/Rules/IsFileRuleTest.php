@@ -1,6 +1,5 @@
 <?php
 
-use Enricky\RequestValidator\Abstract\FileInterface;
 use Enricky\RequestValidator\Enums\FileType;
 use Enricky\RequestValidator\Rules\IsFileRule;
 
@@ -14,6 +13,11 @@ it("should be a major rule", function () {
 
 it("should return the default error message", function () {
     expect($this->fileRule->getMessage())->toBe("field :attributeName is not a valid file");
+});
+
+it("should return custom error message", function () {
+    $rule = new IsFileRule("custom error");
+    expect($rule->getMessage())->toBe("custom error");
 });
 
 it("should validate if file is valid", function () {

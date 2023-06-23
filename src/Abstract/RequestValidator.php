@@ -147,7 +147,7 @@ abstract class RequestValidator
      * }
      * ```
      */
-    final public function validateFile(string $name): FileValidator
+    final public function validateFile(string $name, ?string $message = null): FileValidator
     {
         $value = null;
 
@@ -156,7 +156,7 @@ abstract class RequestValidator
         }
 
         $attriubte = new Attribute($name, $value);
-        return new FileValidator($attriubte);
+        return new FileValidator($attriubte, $message);
     }
 
     private function checkEmpty(mixed $name): bool
