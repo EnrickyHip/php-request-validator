@@ -12,6 +12,8 @@ use Enricky\RequestValidator\FileValidator;
 /** Abstract class to represent a request validation.  */
 abstract class RequestValidator
 {
+    /** @var string[] $errors */
+    private array $errors = [];
     protected array $data;
     private $nullables = ["null", "", "undefined"];
 
@@ -33,8 +35,6 @@ abstract class RequestValidator
     /**
      * Validates the request data based on the defined rules.
      *
-     * @param array $data The request data to be validated.
-     *
      * @return bool Returns true if the request data is valid, false otherwise.
      */
     final public function validate(): bool
@@ -52,13 +52,42 @@ abstract class RequestValidator
     final public function getErrors(): array
     {
         $validators = $this->rules();
-        $errors = [];
 
         foreach ($validators as $validator) {
-            $errors = [...$errors, ...$validator->getErrors()];
+            $this->errors = [...$this->errors, ...$validator->getErrors()];
         }
 
-        return array_unique($errors);
+        return array_unique($this->errors);
+    }
+
+    /**
+     * Checks if at least one of the given validators were sent.
+     * @param ValidatorInterface[] $validators An array of validators to check.
+     * @param string $message A custom error message.
+     * @param bool $exclusive When true it will only be validated if only one field was sent.
+     */
+    final public function requireOr(array $validators, string $message, bool $exclusive = false): void
+    {
+        $valid = false;
+
+        foreach ($validators as $validator) {
+            if ($validator->getValue() !== null) {
+                if ($valid && $exclusive) {
+                    $valid = false;
+                    break;
+                }
+
+                $valid = true;
+
+                if (!$exclusive) {
+                    break;
+                }
+            }
+        }
+
+        if (!$valid) {
+            $this->errors[] = $message;
+        }
     }
 
     /**

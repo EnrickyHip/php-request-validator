@@ -33,10 +33,11 @@ function createRule(bool $valid, bool $isMajor = false): ValidationRule
     };
 }
 
-it("should get field", function () {
+it("should get field name and value", function () {
     $field = new AttributeMock();
     $validator = new FieldValidator($field);
-    expect($validator->getAttribute())->toBe($field);
+    expect($validator->getName())->toBe($field->getName());
+    expect($validator->getValue())->toBe($field->getValue());
 });
 
 it("should be valid if no rule was sent", function () {

@@ -73,12 +73,6 @@ abstract class Validator implements ValidatorInterface
         return $this;
     }
 
-
-    /**
-     * Add rule to the attribute.
-     * @param ValidationRule $rule
-     * @return static Validator instance to allow chaining another validation rules.
-     */
     public function addRule(ValidationRule $rule): static
     {
         if ($rule->isMajor()) {
@@ -99,16 +93,16 @@ abstract class Validator implements ValidatorInterface
         return [...$this->rules, ...$this->majorRules];
     }
 
-    public function getAttribute(): AttributeInterface
+    public function getName(): string
     {
-        return $this->attribute;
+        return $this->attribute->getName();
     }
 
+    public function getValue(): mixed
+    {
+        return $this->attribute->getValue();
+    }
 
-    /**
-     * Validate and get all attribute errors.
-     * @return string[] array of error messages.
-     */
     public function getErrors(): array
     {
         if ($this->isValid === null) {
@@ -118,10 +112,6 @@ abstract class Validator implements ValidatorInterface
         return $this->errors;
     }
 
-    /**
-     * Validate the attribute.
-     * @return bool true if valid, false otherwise.
-     */
     public function validate(): bool
     {
         $this->isValid = true;

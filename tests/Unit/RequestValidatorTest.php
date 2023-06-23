@@ -8,12 +8,16 @@ use Enricky\RequestValidator\File;
 use Enricky\RequestValidator\FileValidator;
 
 /** @param string[] $errors */
-function createValidator(bool $valid, array $errors)
+function createValidator(bool $valid, array $errors, string $name = "name", mixed $value = "value")
 {
-    return new class($valid, $errors) implements ValidatorInterface
+    return new class($valid, $errors, $name, $value) implements ValidatorInterface
     {
-        public function __construct(private bool $valid, private array $errors)
-        {
+        public function __construct(
+            private bool $valid,
+            private array $errors,
+            private string $name,
+            private mixed $value
+        ) {
         }
 
         public function validate(): bool
@@ -30,12 +34,24 @@ function createValidator(bool $valid, array $errors)
         {
             return $this;
         }
+
+        public function getName(): string
+        {
+            return $this->name;
+        }
+
+        public function getValue(): mixed
+        {
+            return $this->value;
+        }
     };
 }
 
 /** @param ValidatorInterface[] $validators */
-function createRequest(array $validators, array &$data)
-{
+function createRequest(
+    array $validators,
+    array &$data
+) {
     return new class($validators, $data) extends RequestValidator
     {
         public function __construct(private array $validators, array &$data)
@@ -105,8 +121,8 @@ it("should create field validators", function () {
     $validator2 = $request->validateField("email");
 
     expect([$validator1, $validator2])->toContainOnlyInstancesOf(FieldValidator::class);
-    expect($validator1->getAttribute()->getName())->toBe("name");
-    expect($validator1->getAttribute()->getValue())->toBe("Enricky");
+    expect($validator1->getName())->toBe("name");
+    expect($validator1->getValue())->toBe("Enricky");
 });
 
 it("should create file validators", function () {
@@ -132,8 +148,8 @@ it("should create file validators", function () {
     $validator2 = $request->validateFile("file2");
 
     expect([$validator1, $validator2])->toContainOnlyInstancesOf(FileValidator::class);
-    expect($validator1->getAttribute()->getName())->toBe("file");
-    expect($validator1->getAttribute()->getValue())->toBeInstanceOf(File::class);
+    expect($validator1->getName())->toBe("file");
+    expect($validator1->getValue())->toBeInstanceOf(File::class);
 });
 
 it("should set null if key does not exist on call validateField or validateFile", function () {
@@ -145,8 +161,8 @@ it("should set null if key does not exist on call validateField or validateFile"
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
 
-    expect($validator1->getAttribute()->getValue())->toBe(null);
-    expect($validator2->getAttribute()->getValue())->toBe(null);
+    expect($validator1->getValue())->toBe(null);
+    expect($validator2->getValue())->toBe(null);
 });
 
 it("should set null if value is an nullable string on call validateField or validateFile", function (string $value) {
@@ -158,8 +174,8 @@ it("should set null if value is an nullable string on call validateField or vali
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
 
-    expect($validator1->getAttribute()->getValue())->toBe(null);
-    expect($validator2->getAttribute()->getValue())->toBe(null);
+    expect($validator1->getValue())->toBe(null);
+    expect($validator2->getValue())->toBe(null);
 })->with(["null", "", "undefined"]);
 
 it("should set value to null in the original array if value is an nullable string on call validateField", function (string $value) {
@@ -225,3 +241,61 @@ it("should maintain values if they are not nullables on validateFile", function 
     $request->validateFile("name");
     expect($data["name"])->toBe($value);
 })->with(["not null", "0", 0, fn () => [], false, true]);
+
+test("requireOr() should validate if at least one field was sent", function (mixed $value1, mixed $value2, mixed $value3) {
+    $data = [];
+    $request = createRequest([], $data);
+    $validator1 = createValidator(true, [], "field1", $value1);
+    $validator2 = createValidator(true, [], "field2", $value2);
+    $validator3 = createValidator(true, [], "field3", $value3);
+
+    $request->requireOr([$validator1, $validator2, $validator3], "at least one should be send");
+    expect($request->validate())->toBeTrue();
+})->with([
+    [null, null, "valid"],
+    [null, "valid", "also_valid"],
+    ["valid", false, 11],
+]);
+
+test("requireOr() should not validate if no one was sent", function () {
+    $data = [];
+    $request = createRequest([], $data);
+    $validator1 = createValidator(true, [], "field1", null);
+    $validator2 = createValidator(true, [], "field2", null);
+    $validator3 = createValidator(true, [], "field3", null);
+
+    $request->requireOr([$validator1, $validator2, $validator3], "at least one should be send");
+    expect($request->validate())->toBeFalse();
+    expect($request->getErrors()[0])->toBe("at least one should be send");
+});
+
+test("requireOr() with exclusive parameter should validate if only one field was sent", function (mixed $value1, mixed $value2, mixed $value3) {
+    $data = [];
+    $request = createRequest([], $data);
+    $validator1 = createValidator(true, [], "field1", $value1);
+    $validator2 = createValidator(true, [], "field2", $value2);
+    $validator3 = createValidator(true, [], "field3", $value3);
+
+    $request->requireOr([$validator1, $validator2, $validator3], "at least one should be send", true);
+    expect($request->validate())->toBeTrue();
+})->with([
+    [null, null, "valid"],
+    [null, 11, null],
+    [null, null, true],
+]);
+
+test("requireOr() with exclusive parameter should not validate if more than one field were sent", function (mixed $value1, mixed $value2, mixed $value3) {
+    $data = [];
+    $request = createRequest([], $data);
+    $validator1 = createValidator(true, [], "field1", $value1);
+    $validator2 = createValidator(true, [], "field2", $value2);
+    $validator3 = createValidator(true, [], "field3", $value3);
+
+    $request->requireOr([$validator1, $validator2, $validator3], "just one one should be send", true);
+    expect($request->validate())->toBeFalse();
+    expect($request->getErrors()[0])->toBe("just one one should be send");
+})->with([
+    [null, 1.1, "valid"],
+    [null, 11, true],
+    ["valid", "not_null", 11],
+]);
