@@ -37,6 +37,10 @@ class IsDateTimeRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         $date = DateTime::createFromFormat($this->format, $value);
         return $date instanceof DateTime;
     }

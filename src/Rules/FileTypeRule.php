@@ -10,8 +10,9 @@ use Enricky\RequestValidator\Enums\FileType;
 
 class FileTypeRule extends ValidationRule
 {
-    /** @param FileType[] $types */
+    /** @var FileType[] $types */
     private array $types;
+
     protected string $message = "file :attributeName has an invalid type.";
 
     /** @param (FileType|string)[]|FileType|string $types */

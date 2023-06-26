@@ -125,9 +125,11 @@ abstract class ValidationRule
             "object" => "{object}",
             "NULL" => "null",
             "unknown type" => "unknown",
+            "resource", "resource (closed)" => "{resource}",
         };
     }
 
+    /** @param string[] $params */
     private function replaceParams(array $params): string
     {
         $message = $this->message;

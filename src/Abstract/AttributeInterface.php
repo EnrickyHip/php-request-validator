@@ -8,6 +8,6 @@ interface AttributeInterface
     /** @return string The attribute's name (key). */
     public function getName(): string;
 
-    /** @return string The attribute's value. */
+    /** @return mixed The attribute's value. */
     public function getValue(): mixed;
 }

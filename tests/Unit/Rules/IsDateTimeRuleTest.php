@@ -49,6 +49,11 @@ it("should not validate date with different formats", function (string $format, 
     ["m-d-Y", "1997-12-12"],
 ]);
 
+it("should not validate date if value is not a string", function (mixed $invalidType) {
+    $isDateTimeRule = new IsDateTimeRule();
+    expect($isDateTimeRule->validate($invalidType))->toBeFalse();
+})->with([true, 1, fn () => [], new stdClass]);
+
 it("should not be a major rule", function () {
     $isDateTimeRule = new IsDateTimeRule();
     expect($isDateTimeRule->isMajor())->toBeFalse();

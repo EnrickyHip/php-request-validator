@@ -16,6 +16,10 @@ class IsUrlRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         return (bool)preg_match(self::URL_MATCH, $value);
     }
 }

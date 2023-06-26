@@ -90,7 +90,7 @@ abstract class Validator implements ValidatorInterface
      */
     public function getRules(): array
     {
-        return [...$this->rules, ...$this->majorRules];
+        return [...$this->majorRules, ...$this->rules,];
     }
 
     public function getName(): string

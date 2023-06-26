@@ -36,6 +36,10 @@ it("should not validate", function (string $url) {
     "http://[::1]",
 ]);
 
+it("should not validat id value is not a string", function (mixed $invalidType) {
+    expect($this->urlRule->validate($invalidType))->toBeFalse();
+})->with([true, 1, fn () => [], new stdClass]);
+
 it("should not be a major rule", function () {
     expect($this->urlRule->isMajor())->toBeFalse();
 });

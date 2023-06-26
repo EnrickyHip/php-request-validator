@@ -14,9 +14,14 @@ abstract class RequestValidator
 {
     /** @var string[] $errors */
     private array $errors = [];
+
+    /** @var mixed[] $data */
     protected array $data;
+
+    /** @var mixed[] $nullables */
     private $nullables = ["null", "", "undefined"];
 
+    /** @param mixed[] $data */
     public function __construct(array &$data)
     {
         $this->data = &$data;
@@ -24,8 +29,6 @@ abstract class RequestValidator
 
     /**
      * Defines the validaton rules for the request data.
-     *
-     * @param array $data The request data to be validated.
      *
      * @return ValidatorInterface[] An array of validator instances.
      *
@@ -44,8 +47,6 @@ abstract class RequestValidator
 
     /**
      * Retrieves all validation errors from the request data based on the defined rules.
-     *
-     * @param array $data The request data to be validated.
      *
      * @return string[] An array of validation error messages.
      */
