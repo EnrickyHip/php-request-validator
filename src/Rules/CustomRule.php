@@ -35,4 +35,13 @@ class CustomRule extends ValidationRule
         $closure = $this->condition;
         return $closure($value);
     }
+
+    /**
+     * Get rule condition
+     * @return Closure(mixed $value): bool Closure instance
+     */
+    public function getCondition(): Closure
+    {
+        return $this->condition;
+    }
 }

@@ -28,3 +28,9 @@ it("should return the custom error message if sent", function () {
     $customRule = new CustomRule($condition, "Should be 1");
     expect($customRule->getMessage())->toBe("Should be 1");
 });
+
+it("should get condition", function () {
+    $condition = fn (mixed $value) => $value === 1;
+    $customRule = new CustomRule($condition, "Should be 1");
+    expect($customRule->getCondition())->toBe($condition);
+});

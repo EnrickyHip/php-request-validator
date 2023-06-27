@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator;
 
+use Closure;
 use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 /**
@@ -52,6 +54,24 @@ class FieldValidator extends Validator
     public function type(DataType|string $type, ?string $message = null): self
     {
         $rule = new TypeRule($type, $message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Add a custom rule for a field.
+     *
+     * @param Closure(mixed $value): bool $condition A closure containing the validation logic.
+     * @param string|null $message Optional custom error message for the rule.
+     *
+     * ```php
+     * $condition = fn(mixed $value) => $value === "valid value";
+     * $this->validateField("field")->custom($condition, "invalid field");
+     * ```
+     */
+    public function custom(Closure $condition, ?string $message = null): self
+    {
+        $rule = new CustomRule($condition, $message);
         $this->addRule($rule);
         return $this;
     }
