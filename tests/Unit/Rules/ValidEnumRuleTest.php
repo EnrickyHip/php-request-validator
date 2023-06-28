@@ -105,3 +105,12 @@ it("should return false if value is not a integer on a integer backed enum", fun
     $enumRule = new ValidEnumRule(BackedEnumMockInt::class);
     expect($enumRule->validate($value))->toBeFalse();
 })->with([DataType::INT, null, "1", "string", false, new stdClass()]);
+
+it("should get min value", function (string $enumClass) {
+    $enumRule = new ValidEnumRule($enumClass);
+    expect($enumRule->getEnumClass())->toBe($enumClass);
+})->with([
+    BackedEnumMock::class,
+    DataType::class,
+    BackedEnumMockInt::class,
+]);

@@ -51,6 +51,11 @@ class ValidEnumRule extends ValidationRule
         return (bool)$this->enumClass::tryFrom($value);
     }
 
+    public function getEnumClass(): string
+    {
+        return $this->enumClass;
+    }
+
     private function getBackingType(): string
     {
         return gettype($this->enumClass::cases()[0]->value);

@@ -14,6 +14,7 @@ use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\MaxRule;
 use Enricky\RequestValidator\Rules\MinRule;
 use Enricky\RequestValidator\Rules\TypeRule;
+use Enricky\RequestValidator\Rules\ValidEnumRule;
 
 /**
  * Builder class that allow you to add validation rules for a field. Do not use this class directly. Use RequestsValidator::validateField() instead.
@@ -163,6 +164,22 @@ class FieldValidator extends Validator
     public function min(int|float $min, ?string $message = null): self
     {
         $rule = new MinRule($min, $message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+
+    /**
+     * Create a new ValidEnumRule instance.
+     *
+     * @param string $enumClass The class name of the enum.
+     * @param string|null $message The custom error message for the rule.
+     *
+     * @throws InvalidEnumException If the provided string is not a backed enum class.
+     */
+    public function isEnum(string $enumClass, ?string $message = null): self
+    {
+        $rule = new ValidEnumRule($enumClass, $message);
         $this->addRule($rule);
         return $this;
     }

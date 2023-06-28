@@ -10,6 +10,7 @@ use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\MaxRule;
 use Enricky\RequestValidator\Rules\MinRule;
 use Enricky\RequestValidator\Rules\TypeRule;
+use Enricky\RequestValidator\Rules\ValidEnumRule;
 
 beforeEach(function () {
     $field = new AttributeMock();
@@ -248,4 +249,38 @@ test("min() should return self", function () {
 
     expect($fieldValidator->min(10))->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->min(10))->toBe($fieldValidator);
+});
+
+it("should add enum rule", function (string $enumClass) {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->isEnum($enumClass);
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(ValidEnumRule::class);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getEnumClass())->toBe($enumClass);
+})->with([
+    BackedEnumMock::class,
+    DataType::class,
+    BackedEnumMockInt::class,
+]);
+
+
+it("should add enum rule with match message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->isEnum(DataType::class, "invalid enum");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid enum");
+});
+
+test("isEnum() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->isEnum(BackedEnumMock::class))->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->isEnum(BackedEnumMock::class))->toBe($fieldValidator);
 });
