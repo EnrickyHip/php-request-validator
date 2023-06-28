@@ -7,6 +7,7 @@ use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
+use Enricky\RequestValidator\Rules\MaxRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
@@ -188,4 +189,33 @@ test("isDateString() should return self", function () {
 
     expect($fieldValidator->isDateString())->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->isDateString())->toBe($fieldValidator);
+});
+
+it("should add max rule", function (int|float $max) {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->max($max);
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(MaxRule::class);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getMax())->toBe($max);
+})->with([10, 1.1, 2, 3, 4.5, 12]);
+
+it("should add max rule with match message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->max(10, "maximum exceed");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("maximum exceed");
+});
+
+test("max() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->max(10))->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->max(10))->toBe($fieldValidator);
 });

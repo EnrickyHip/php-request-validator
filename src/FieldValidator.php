@@ -11,6 +11,7 @@ use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
+use Enricky\RequestValidator\Rules\MaxRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 /**
@@ -135,6 +136,19 @@ class FieldValidator extends Validator
     public function isDateString(string $format = "Y-m-d", ?string $message = null): self
     {
         $rule = new IsDateStringRule($format, $message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Add a max rule for a field.
+     *
+     * @param int|float $max The maximum length allowed for the string field.
+     * @param string|null $message The custom error message for the rule.
+     */
+    public function max(int|float $max, ?string $message = null): self
+    {
+        $rule = new MaxRule($max, $message);
         $this->addRule($rule);
         return $this;
     }

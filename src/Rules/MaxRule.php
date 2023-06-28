@@ -9,16 +9,16 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 /** Rule to validate the maximum length of a string field. */
 class MaxRule extends ValidationRule
 {
-    private int $max;
+    private int|float $max;
     protected string $message = "field :attributeName length is bigger than :max";
 
     /**
      * Create a new MaxRule instance.
      *
-     * @param int $max The maximum length allowed for the string field.
+     * @param int|float $max The maximum length allowed for the string field.
      * @param string|null $message The custom error message for the rule.
      */
-    public function __construct(int $max, ?string $message = null)
+    public function __construct(int|float $max, ?string $message = null)
     {
         parent::__construct($message);
         $this->max = $max;
@@ -38,5 +38,10 @@ class MaxRule extends ValidationRule
         }
 
         return false;
+    }
+
+    public function getMax(): int|float
+    {
+        return $this->max;
     }
 }

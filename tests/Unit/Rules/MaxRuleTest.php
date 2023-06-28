@@ -51,3 +51,8 @@ it("should not validate if value is a number higher than the maximum", function 
 it("should validate if value is a number lower or equal than the maximum", function (int|float $number) {
     expect($this->maxRule->validate($number))->toBeTrue();
 })->with([10, 10.0, 9, 9.9, 1]);
+
+it("should get max value", function (int|float $value) {
+    $maxRule = new MaxRule($value);
+    expect($maxRule->getMax())->toBe($value);
+})->with([10, 1.1, 2, 3, 4.5, 12]);
