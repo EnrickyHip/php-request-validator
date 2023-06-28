@@ -1,10 +1,10 @@
 <?php
 
-use Enricky\RequestValidator\Rules\IsDateTimeRule;
+use Enricky\RequestValidator\Rules\IsDateStringRule;
 
 it("should validate valid date with default format (Y-m-d)", function (string $date) {
-    $isDateTimeRule = new IsDateTimeRule();
-    expect($isDateTimeRule->validate($date))->toBeTrue();
+    $isDateStringRule = new IsDateStringRule();
+    expect($isDateStringRule->validate($date))->toBeTrue();
 })->with([
     "2023-05-16",
     "2020-02-29",
@@ -13,8 +13,8 @@ it("should validate valid date with default format (Y-m-d)", function (string $d
 ]);
 
 it("should not validate valid date with default format (Y-m-d)", function (string $date) {
-    $isDateTimeRule = new IsDateTimeRule();
-    expect($isDateTimeRule->validate($date))->toBeFalse();
+    $isDateStringRule = new IsDateStringRule();
+    expect($isDateStringRule->validate($date))->toBeFalse();
 })->with([
     "20-12-2020",
     "20-03-2022",
@@ -26,8 +26,8 @@ it("should not validate valid date with default format (Y-m-d)", function (strin
 ]);
 
 it("should validate date with different formats", function (string $format, string $date) {
-    $isDateTimeRule = new IsDateTimeRule($format);
-    expect($isDateTimeRule->validate($date))->toBeTrue();
+    $isDateStringRule = new IsDateStringRule($format);
+    expect($isDateStringRule->validate($date))->toBeTrue();
 })->with([
     ["d/m/Y", "16/05/2023"],
     ["d/m/Y", "25/01/2004"],
@@ -36,8 +36,8 @@ it("should validate date with different formats", function (string $format, stri
 ]);
 
 it("should not validate date with different formats", function (string $format, string $date) {
-    $isDateTimeRule = new IsDateTimeRule($format);
-    expect($isDateTimeRule->validate($date))->toBeFalse();
+    $isDateStringRule = new IsDateStringRule($format);
+    expect($isDateStringRule->validate($date))->toBeFalse();
 })->with([
     ["d/m/Y", "16-05-2023"],
     ["d/m/Y", "25-01-2004"],
@@ -50,21 +50,21 @@ it("should not validate date with different formats", function (string $format, 
 ]);
 
 it("should not validate date if value is not a string", function (mixed $invalidType) {
-    $isDateTimeRule = new IsDateTimeRule();
-    expect($isDateTimeRule->validate($invalidType))->toBeFalse();
+    $isDateStringRule = new IsDateStringRule();
+    expect($isDateStringRule->validate($invalidType))->toBeFalse();
 })->with([true, 1, fn () => [], new stdClass]);
 
 it("should not be a major rule", function () {
-    $isDateTimeRule = new IsDateTimeRule();
-    expect($isDateTimeRule->isMajor())->toBeFalse();
+    $isDateStringRule = new IsDateStringRule();
+    expect($isDateStringRule->isMajor())->toBeFalse();
 });
 
 it("should return the default error message if not sent", function () {
-    $isDateTimeRule = new IsDateTimeRule();
-    expect($isDateTimeRule->getMessage())->toBe("field :attributeName is not a valid date");
+    $isDateStringRule = new IsDateStringRule();
+    expect($isDateStringRule->getMessage())->toBe("field :attributeName is not a valid date");
 });
 
 it("should return the correct error message if sent", function () {
-    $isDateTimeRule = new IsDateTimeRule(message: "Invalid Date");
-    expect($isDateTimeRule->getMessage())->toBe("Invalid Date");
+    $isDateStringRule = new IsDateStringRule(message: "Invalid Date");
+    expect($isDateStringRule->getMessage())->toBe("Invalid Date");
 });

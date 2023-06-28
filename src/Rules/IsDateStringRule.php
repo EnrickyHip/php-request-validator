@@ -8,23 +8,23 @@ use DateTime;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
 /** Rule to validate if a value is a valid date time string.*/
-class IsDateTimeRule extends ValidationRule
+class IsDateStringRule extends ValidationRule
 {
     private string $format;
     protected string $message = "field :attributeName is not a valid date";
 
     /**
-     * Create a new IsDateTimeRule instance.
+     * Create a new IsDateStringRule instance.
      *
      * @param string $format The expected format for the date string (default: "Y-m-d").
      * @param string|null $message The custom error message for the rule.
      *
      * ```php
-     * $rule = new IsDateTimeRule();
+     * $rule = new IsDateStringRule();
      * $rule->validate("2023-05-23"); //true
      * $rule->validate("23/05/2023"); //false
      *
-     * $rule = new IsDateTimeRule("d/m/Y");
+     * $rule = new IsDateStringRule("d/m/Y");
      * $rule->validate("2023-05-23"); //false
      * $rule->validate("23/05/2023"); //true
      * ```
