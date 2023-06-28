@@ -8,6 +8,7 @@ use Closure;
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
+use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 /**
@@ -89,6 +90,22 @@ class FieldValidator extends Validator
     public function isEmail(?string $message = null): self
     {
         $rule = new IsEmailRule($message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Add a url rule for a field.
+     *
+     * @param string|null $message Optional custom error message for the rule.
+     *
+     * ```php
+     * $this->validateField("field")->isUrl("invalid url");
+     * ```
+     */
+    public function isUrl(?string $message = null): self
+    {
+        $rule = new IsUrlRule($message);
         $this->addRule($rule);
         return $this;
     }

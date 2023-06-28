@@ -4,6 +4,7 @@ use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
+use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
@@ -97,4 +98,30 @@ test("isEmail() should return self", function () {
 
     expect($fieldValidator->isEmail())->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->isEmail())->toBe($fieldValidator);
+});
+
+it("should add url rule", function () {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->isUrl();
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(IsUrlRule::class);
+});
+
+it("should add url rule with custom message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->isUrl("invalid url");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid url");
+});
+
+test("isUrl() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->isUrl())->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->isUrl())->toBe($fieldValidator);
 });
