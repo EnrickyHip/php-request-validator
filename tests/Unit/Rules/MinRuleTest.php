@@ -51,3 +51,8 @@ it("should not validate if value is a number lower than the minimum", function (
 it("should validate if value is a number higher or equal than the minimum", function (int|float $number) {
     expect($this->minRule->validate($number))->toBeTrue();
 })->with([10, 10.0, 11, 10.1, 20]);
+
+it("should get min value", function (int|float $value) {
+    $minRule = new MinRule($value);
+    expect($minRule->getMin())->toBe($value);
+})->with([10, 1.1, 2, 3, 4.5, 12]);

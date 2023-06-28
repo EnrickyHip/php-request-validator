@@ -9,16 +9,16 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 /** Rule to validate the minimum length of a string field. */
 class MinRule extends ValidationRule
 {
-    private int $min;
+    private int|float $min;
     protected string $message = "field :attributeName length is lower than :min";
 
     /**
      * Create a new MaxRule instance.
      *
-     * @param int $min The minimum length allowed for the string field.
+     * @param int|float $min The minimum length allowed for the string field.
      * @param string|null $message The custom error message for the rule.
      */
-    public function __construct(int $min, ?string $message = null)
+    public function __construct(int|float $min, ?string $message = null)
     {
         parent::__construct($message);
         $this->min = $min;
@@ -38,5 +38,11 @@ class MinRule extends ValidationRule
         }
 
         return false;
+    }
+
+
+    public function getMin(): int|float
+    {
+        return $this->min;
     }
 }

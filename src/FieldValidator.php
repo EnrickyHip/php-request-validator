@@ -12,6 +12,7 @@ use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\MaxRule;
+use Enricky\RequestValidator\Rules\MinRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 /**
@@ -149,6 +150,19 @@ class FieldValidator extends Validator
     public function max(int|float $max, ?string $message = null): self
     {
         $rule = new MaxRule($max, $message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Add a min rule for a field.
+     *
+     * @param int|float $min The minimum length allowed for the string field.
+     * @param string|null $message The custom error message for the rule.
+     */
+    public function min(int|float $min, ?string $message = null): self
+    {
+        $rule = new MinRule($min, $message);
         $this->addRule($rule);
         return $this;
     }

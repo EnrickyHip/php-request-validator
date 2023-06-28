@@ -8,6 +8,7 @@ use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\MaxRule;
+use Enricky\RequestValidator\Rules\MinRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
@@ -218,4 +219,33 @@ test("max() should return self", function () {
 
     expect($fieldValidator->max(10))->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->max(10))->toBe($fieldValidator);
+});
+
+it("should add min rule", function (int|float $min) {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->min($min);
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(MinRule::class);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getMin())->toBe($min);
+})->with([10, 1.1, 2, 3, 4.5, 12]);
+
+it("should add min rule with match message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->min(10, "minimum exceed");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("minimum exceed");
+});
+
+test("min() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->min(10))->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->min(10))->toBe($fieldValidator);
 });
