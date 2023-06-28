@@ -44,4 +44,9 @@ class IsDateStringRule extends ValidationRule
         $date = DateTime::createFromFormat($this->format, $value);
         return $date instanceof DateTime;
     }
+
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
 }

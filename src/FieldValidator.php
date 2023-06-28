@@ -7,6 +7,7 @@ namespace Enricky\RequestValidator;
 use Closure;
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\Rules\CustomRule;
+use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
@@ -112,7 +113,7 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Create a new MatchRule instance.
+     * Add a match rule for a field.
      *
      * @param string $match The regular expression pattern to match against.
      * @param string|null $message The match error message for the rule.
@@ -120,6 +121,20 @@ class FieldValidator extends Validator
     public function match(string $match, ?string $message = null): self
     {
         $rule = new MatchRule($match, $message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Add a date string rule for a field.
+     *
+     * @param string $format The expected format for the date string (default: "Y-m-d").
+     * @param string|null $message The custom error message for the rule.
+     *
+     */
+    public function isDateString(string $format = "Y-m-d", ?string $message = null): self
+    {
+        $rule = new IsDateStringRule($format, $message);
         $this->addRule($rule);
         return $this;
     }

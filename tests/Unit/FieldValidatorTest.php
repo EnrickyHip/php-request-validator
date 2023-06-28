@@ -3,6 +3,7 @@
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\Rules\CustomRule;
+use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
@@ -158,4 +159,33 @@ test("match() should return self", function () {
 
     expect($fieldValidator->match("/^[a-z]+$/i"))->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->match("/^[a-z]+$/i"))->toBe($fieldValidator);
+});
+
+it("should add date string rule", function (string $format) {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->isDateString($format);
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(IsDateStringRule::class);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getFormat())->toBe($format);
+})->with(["d/m/Y", "m-d-Y"]);
+
+it("should add date string rule with match message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->isDateString(message: "invalid date string");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid date string");
+});
+
+test("isDateString() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->isDateString())->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->isDateString())->toBe($fieldValidator);
 });

@@ -68,3 +68,13 @@ it("should return the correct error message if sent", function () {
     $isDateStringRule = new IsDateStringRule(message: "Invalid Date");
     expect($isDateStringRule->getMessage())->toBe("Invalid Date");
 });
+
+it("should get 'Y-m-d' format as default", function () {
+    $isDateStringRule = new IsDateStringRule();
+    expect($isDateStringRule->getFormat())->toBe("Y-m-d");
+});
+
+it("should get custom format", function (string $format) {
+    $isDateStringRule = new IsDateStringRule($format);
+    expect($isDateStringRule->getFormat())->toBe($format);
+})->with(["d/m/Y", "m-d-Y"]);
