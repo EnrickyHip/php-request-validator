@@ -3,6 +3,7 @@
 use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\Rules\CustomRule;
+use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
@@ -70,4 +71,30 @@ test("custom() should return self", function () {
 
     expect($fieldValidator->custom(fn () => true))->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->custom(fn () => true))->toBe($fieldValidator);
+});
+
+it("should add email rule", function () {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->isEmail();
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(IsEmailRule::class);
+});
+
+it("should add email rule with custom message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->isEmail("invalid email");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid email");
+});
+
+test("isEmail() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->isEmail())->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->isEmail())->toBe($fieldValidator);
 });
