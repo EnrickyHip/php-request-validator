@@ -9,6 +9,7 @@ use Enricky\RequestValidator\Enums\DataType;
 use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
+use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 /**
@@ -106,6 +107,19 @@ class FieldValidator extends Validator
     public function isUrl(?string $message = null): self
     {
         $rule = new IsUrlRule($message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Create a new MatchRule instance.
+     *
+     * @param string $match The regular expression pattern to match against.
+     * @param string|null $message The match error message for the rule.
+     */
+    public function match(string $match, ?string $message = null): self
+    {
+        $rule = new MatchRule($match, $message);
         $this->addRule($rule);
         return $this;
     }

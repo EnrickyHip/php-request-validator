@@ -32,4 +32,9 @@ class MatchRule extends ValidationRule
 
         return (bool)preg_match($this->match, $value);
     }
+
+    public function getMatchPattern(): string
+    {
+        return $this->match;
+    }
 }

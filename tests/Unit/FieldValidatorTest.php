@@ -5,6 +5,7 @@ use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
+use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 beforeEach(function () {
@@ -124,4 +125,37 @@ test("isUrl() should return self", function () {
 
     expect($fieldValidator->isUrl())->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->isUrl())->toBe($fieldValidator);
+});
+
+it("should add match rule", function (string $match) {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->match($match);
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(MatchRule::class);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getMatchPattern())->toBe($match);
+})->with([
+    "/^[a-z]+$/i",
+    "/^\d{4}-\d{2}-\d{2}$/",
+    "/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/i"
+]);
+
+it("should add match rule with match message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->match("/^[a-z]+$/i", "invalid match");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid match");
+});
+
+test("match() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->match("/^[a-z]+$/i"))->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->match("/^[a-z]+$/i"))->toBe($fieldValidator);
 });
