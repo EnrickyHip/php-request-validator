@@ -10,7 +10,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class MatchRule extends ValidationRule
 {
     private string $match;
-    protected string $message = "field :attributeName does not match the given regular expression";
+    protected string $message = "field :name does not match the given regular expression";
 
     /**
      * Create a new MatchRule instance.

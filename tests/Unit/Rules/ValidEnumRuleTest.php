@@ -36,7 +36,7 @@ it("should not be a major rule", function () {
 
 it("should return the default error message", function () {
     $enumRule = new ValidEnumRule(BackedEnumMock::class);
-    expect($enumRule->getMessage())->toBe("field :attributeName is not a part of the enum :enum");
+    expect($enumRule->getMessage())->toBe("field :name is not a part of the enum :enum");
 });
 
 it("should return the custom error message", function () {

@@ -12,7 +12,7 @@ it("should be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->fileRule->getMessage())->toBe("field :attributeName is not a valid file");
+    expect($this->fileRule->getMessage())->toBe("field :name is not a valid file");
 });
 
 it("should return custom error message", function () {

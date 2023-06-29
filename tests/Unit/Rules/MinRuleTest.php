@@ -11,7 +11,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->minRule->getMessage())->toBe("field :attributeName length is lower than :min");
+    expect($this->minRule->getMessage())->toBe("field :name length is lower than :min");
 });
 
 it("should return the correct error message", function () {

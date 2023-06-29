@@ -9,7 +9,7 @@ it("should be a major rule", function () {
 
 it("should return the default error message", function () {
     $isProhibitedRule = new IsProhibitedRule(true);
-    expect($isProhibitedRule->getMessage())->toBe("field :attributeName is prohibited");
+    expect($isProhibitedRule->getMessage())->toBe("field :name is prohibited");
 });
 
 it("should return the custom error message", function () {

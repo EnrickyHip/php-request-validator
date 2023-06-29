@@ -7,7 +7,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 
 class MajorTestValidationRule extends ValidationRule
 {
-    protected string $message = "the field :attributeName with value :attributeValue is not valid";
+    protected string $message = "the field :name with value :value is not valid";
 
     public function validate(mixed $value): bool
     {
@@ -30,7 +30,7 @@ it("should return custom message", function () {
 });
 
 it("should return custom default error message", function () {
-    expect($this->testRule->getMessage())->toBe("the field :attributeName with value :attributeValue is not valid");
+    expect($this->testRule->getMessage())->toBe("the field :name with value :value is not valid");
 });
 
 it("should be a major rule", function () {

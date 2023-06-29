@@ -8,7 +8,7 @@ class ValidationRuleWithParams extends ValidationRule
 {
     private string $param;
     private mixed $otherParam;
-    protected string $message = "the field :attributeName with value :attributeValue is not valid with :param and :otherParam";
+    protected string $message = "the field :name with value :value is not valid with :param and :otherParam";
 
     public function __construct(string $param, mixed $otherParam)
     {

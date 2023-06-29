@@ -23,7 +23,7 @@ it("should return custom message if sent", function () {
 });
 
 it("should return default error message if not sent", function () {
-    expect($this->testRule->getMessage())->toBe("field :attributeName is invalid");
+    expect($this->testRule->getMessage())->toBe("field :name is invalid");
 });
 
 it("should return false when validation fails", function () {

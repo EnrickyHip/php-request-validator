@@ -13,7 +13,7 @@ class FileTypeRule extends ValidationRule
     /** @var FileType[] $types */
     private array $types;
 
-    protected string $message = "file :attributeName has an invalid type.";
+    protected string $message = "file :name has an invalid type.";
 
     /** @param (FileType|string)[]|FileType|string $types */
     public function __construct(array|string|FileType $types, ?string $message = null)

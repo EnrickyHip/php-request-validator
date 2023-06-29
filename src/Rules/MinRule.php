@@ -10,7 +10,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class MinRule extends ValidationRule
 {
     private int|float $min;
-    protected string $message = "field :attributeName length is lower than :min";
+    protected string $message = "field :name length is lower than :min";
 
     /**
      * Create a new MaxRule instance.

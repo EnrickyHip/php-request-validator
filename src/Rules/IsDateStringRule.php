@@ -11,7 +11,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class IsDateStringRule extends ValidationRule
 {
     private string $format;
-    protected string $message = "field :attributeName is not a valid date";
+    protected string $message = "field :name is not a valid date";
 
     /**
      * Create a new IsDateStringRule instance.

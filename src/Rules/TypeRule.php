@@ -13,7 +13,7 @@ use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 class TypeRule extends ValidationRule
 {
     private DataType $type;
-    protected string $message = "field :attributeName is not of type :type";
+    protected string $message = "field :name is not of type :type";
 
     /**
      * Create a new TypeRule instance.

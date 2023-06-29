@@ -13,7 +13,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->rule->getMessage())->toBe("file :attributeName has an invalid type.");
+    expect($this->rule->getMessage())->toBe("file :name has an invalid type.");
 });
 
 it("should validate if type is valid", function (array|string|FileType $types, FileType $type) {

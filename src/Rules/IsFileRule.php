@@ -9,7 +9,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 
 class IsFileRule extends ValidationRule
 {
-    protected string $message = "field :attributeName is not a valid file";
+    protected string $message = "field :name is not a valid file";
 
     public function validate(mixed $value): bool
     {

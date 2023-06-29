@@ -20,7 +20,7 @@ it("should not be a major rule", function () {
 });
 
 it("should return the default error message if not sent", function () {
-    expect($this->customRule->getMessage())->toBe("field :attributeName is invalid");
+    expect($this->customRule->getMessage())->toBe("field :name is invalid");
 });
 
 it("should return the custom error message if sent", function () {

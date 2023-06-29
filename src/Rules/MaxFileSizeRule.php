@@ -10,7 +10,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 class MaxFileSizeRule extends ValidationRule
 {
     private int $size;
-    protected string $message = "file :attributeName size is bigger than maximum.";
+    protected string $message = "file :name size is bigger than maximum.";
 
     public function __construct(int $size, ?string $message = null)
     {

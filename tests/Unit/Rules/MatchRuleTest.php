@@ -9,7 +9,7 @@ it("should not be a major rule", function () {
 
 it("should return the default error message", function () {
     $matchRule = new MatchRule("");
-    expect($matchRule->getMessage())->toBe("field :attributeName does not match the given regular expression");
+    expect($matchRule->getMessage())->toBe("field :name does not match the given regular expression");
 });
 
 it("should return the custom error message", function () {
