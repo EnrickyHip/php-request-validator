@@ -2,6 +2,7 @@
 
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\FieldValidator;
+use Enricky\RequestValidator\Rules\ValidateOrRule;
 use Enricky\RequestValidator\Validator;
 
 beforeEach(function () {
@@ -10,28 +11,6 @@ beforeEach(function () {
     {
     };
 });
-
-function createRule(bool $valid, bool $isMajor = false): ValidationRule
-{
-    return new class($valid, $isMajor) extends ValidationRule
-    {
-        public function __construct(
-            private bool $valid,
-            private bool $isMajor,
-        ) {
-        }
-
-        public function validate(mixed $value): bool
-        {
-            return $this->valid;
-        }
-
-        public function isMajor(): bool
-        {
-            return $this->isMajor;
-        }
-    };
-}
 
 it("should get field name and value", function () {
     $field = new AttributeMock();
@@ -208,4 +187,51 @@ it("should not be prohibited if condition is false", function () {
 
     $validator2 = (new FieldValidator($nullField))->prohibitedIf(false);
     expect($validator2->validate())->toBeTrue();
+});
+
+it("should add ValidateOr rule", function () {
+    $field = new AttributeMock();
+    $rules = [];
+
+    $fieldValidator = (new FieldValidator($field))->validateOr([]);
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(ValidateOrRule::class);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getRules())->toBe($rules);
+});
+
+it("should add ValidateOr rule with custom message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->validateOr([], "invalid field");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid field");
+});
+
+it("should add ValidateOr non exclusive as default", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->validateOr([]);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->isExclusive())->toBeFalse();
+});
+
+it("should add ValidateOr and set exclusive", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->validateOr([], exclusive: true);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->isExclusive())->toBeTrue();
+});
+
+test("validateOr() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->validateOr([]))->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->validateOr([]))->toBe($fieldValidator);
 });

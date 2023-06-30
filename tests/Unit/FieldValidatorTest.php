@@ -281,7 +281,7 @@ it("should add enum rule", function () {
 });
 
 
-it("should add enum rule with match message", function () {
+it("should add enum rule with custom message", function () {
     $field = new AttributeMock("name");
     $fieldValidator = (new FieldValidator($field))->isEnum(DataType::class, "invalid enum");
 

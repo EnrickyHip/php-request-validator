@@ -10,6 +10,7 @@ use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Abstract\ValidatorInterface;
 use Enricky\RequestValidator\Rules\IsProhibitedRule;
 use Enricky\RequestValidator\Rules\IsRequiredRule;
+use Enricky\RequestValidator\Rules\ValidateOrRule;
 
 /**
  * Internal abstract class for validators. These is a builder class that allow you to add validation rules to attributes.
@@ -69,6 +70,19 @@ abstract class Validator implements ValidatorInterface
     public function prohibitedIf(bool|Closure $condition, ?string $message = null): static
     {
         $rule = new IsProhibitedRule($condition, $message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    /**
+     * Define a group of rules to a field where at least one of them should be valid.
+     * @param ValidationRule[] $rules rules to validate
+     * @param null|string $message optional custom error message for the rule.
+     * @param bool $exclusive When true it will only be validated if only one rule was validated.
+     */
+    public function validateOr(array $rules, ?string $message = null, bool $exclusive = false): static
+    {
+        $rule = new ValidateOrRule($rules, $message, $exclusive);
         $this->addRule($rule);
         return $this;
     }
