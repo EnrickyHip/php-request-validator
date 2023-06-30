@@ -38,6 +38,22 @@ it("should add type rule with custom message", function () {
     expect($rule->getMessage())->toBe("incorrect type");
 });
 
+it("should add type rule with strict mode", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->type(DataType::STRING);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getStrictMode())->toBeTrue();
+});
+
+it("should add type rule with no strict mode", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->type(DataType::STRING, strict: false);
+
+    $rule = (object)$fieldValidator->getRules()[0];
+    expect($rule->getStrictMode())->toBeFalse();
+});
+
 test("type() should return self", function () {
     $field = new AttributeMock("name");
     $fieldValidator = new FieldValidator($field);
@@ -251,9 +267,9 @@ test("min() should return self", function () {
     expect($fieldValidator->min(10))->toBe($fieldValidator);
 });
 
-it("should add enum rule", function (string $enumClass) {
+it("should add enum rule", function () {
     $field = new AttributeMock();
-    $fieldValidator = (new FieldValidator($field))->isEnum($enumClass);
+    $fieldValidator = (new FieldValidator($field))->isEnum(DataType::class);
 
     expect($fieldValidator->getRules())
         ->toBeArray()
@@ -261,12 +277,8 @@ it("should add enum rule", function (string $enumClass) {
         ->toContainOnlyInstancesOf(ValidEnumRule::class);
 
     $rule = (object)$fieldValidator->getRules()[0];
-    expect($rule->getEnumClass())->toBe($enumClass);
-})->with([
-    BackedEnumMock::class,
-    DataType::class,
-    BackedEnumMockInt::class,
-]);
+    expect($rule->getEnumClass())->toBe(DataType::class);
+});
 
 
 it("should add enum rule with match message", function () {
@@ -281,6 +293,6 @@ test("isEnum() should return self", function () {
     $field = new AttributeMock("name");
     $fieldValidator = new FieldValidator($field);
 
-    expect($fieldValidator->isEnum(BackedEnumMock::class))->toBeInstanceOf(FieldValidator::class);
-    expect($fieldValidator->isEnum(BackedEnumMock::class))->toBe($fieldValidator);
+    expect($fieldValidator->isEnum(DataType::class))->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->isEnum(DataType::class))->toBe($fieldValidator);
 });

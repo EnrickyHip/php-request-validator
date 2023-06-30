@@ -13,6 +13,7 @@ use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 class TypeRule extends ValidationRule
 {
     private DataType $type;
+    private bool $strict;
     protected string $message = "field :name is not of type :type";
 
     /**
@@ -20,10 +21,11 @@ class TypeRule extends ValidationRule
      *
      * @param DataType|string $type The data type to validate against.
      * @param string|null $message The custom error message for the rule.
+     * @param bool $strict set strict type validation
      *
      * @throws InvalidDataTypeException If the provided data type is not part of DataType enum.
      */
-    public function __construct(DataType|string $type, ?string $message = null)
+    public function __construct(DataType|string $type, ?string $message = null, bool $strict = true)
     {
         if (is_string($type)) {
             $type = DataType::tryFrom(strtolower($type));
@@ -35,6 +37,7 @@ class TypeRule extends ValidationRule
 
         parent::__construct($message);
         $this->type = $type;
+        $this->strict = $strict;
         $this->params = [
             ":type" => $this->type->value,
         ];
@@ -44,6 +47,10 @@ class TypeRule extends ValidationRule
     {
         if ($value === null) {
             return true;
+        }
+
+        if ($this->strict) {
+            return $this->type->strictValidate($value);
         }
 
         return $this->type->validate($value);
@@ -57,5 +64,10 @@ class TypeRule extends ValidationRule
     public function isMajor(): bool
     {
         return true;
+    }
+
+    public function getStrictMode(): bool
+    {
+        return $this->strict;
     }
 }

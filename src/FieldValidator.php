@@ -6,6 +6,7 @@ namespace Enricky\RequestValidator;
 
 use Closure;
 use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Exceptions\InvalidEnumException;
 use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
@@ -44,6 +45,7 @@ class FieldValidator extends Validator
      * This is a facade method to easily add a TypeRule validation.
      * @param DataType|string $type expected field type.
      * @param ?string $message optional custom message
+     * @param bool $strict set strict type validation
      * @return FieldValidator The instance of FieldValidator to allow chaining another validation rules.
      *
      * Call using `DataType` enum:
@@ -58,9 +60,9 @@ class FieldValidator extends Validator
      * $this->validateField("age")->type("int");
      * ```
      */
-    public function type(DataType|string $type, ?string $message = null): self
+    public function type(DataType|string $type, ?string $message = null, bool $strict = true): self
     {
-        $rule = new TypeRule($type, $message);
+        $rule = new TypeRule($type, $message, $strict);
         $this->addRule($rule);
         return $this;
     }

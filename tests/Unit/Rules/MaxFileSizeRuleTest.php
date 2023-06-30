@@ -16,7 +16,7 @@ it("should get max size", function (int $size) {
 })->with([20000, 24234, 300000, 123123, 4000, 2001]);
 
 it("should return the default error message", function () {
-    expect($this->rule->getMessage())->toBe("file :name size is bigger than maximum."); //TODO melhorar isso posteriormente. algumas strings não preciam de aspas.
+    expect($this->rule->getMessage())->toBe("file :name size is bigger than maximum.");
 });
 
 it("should not validate if value is not a File Instance", function (mixed $value) {

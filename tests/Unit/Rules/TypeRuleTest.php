@@ -52,3 +52,31 @@ it("should return type", function () {
     expect($typeRule1->getType())->toBe(DataType::INT);
     expect($typeRule2->getType())->toBe(DataType::STRING);
 });
+
+it("should get strict mode", function () {
+    $typeRule1 = new TypeRule(DataType::INT);
+    $typeRule2 = new TypeRule(DataType::INT, strict: false);
+
+    expect($typeRule1->getStrictMode())->toBeTrue();
+    expect($typeRule2->getStrictMode())->toBeFalse();
+});
+
+it("should validate on no strict", function (DataType $type, mixed $value) {
+    $typeRule = new TypeRule($type, strict: false);
+    expect($typeRule->validate($value))->toBeTrue();
+})->with([
+    [DataType::STRING, "value"],
+    [DataType::INT, "1"],
+    [DataType::FLOAT, "1.1"],
+    [DataType::BOOL, "true"],
+]);
+
+it("should not validate on no strict", function (DataType $type, mixed $value) {
+    $typeRule = new TypeRule($type, strict: false);
+    expect($typeRule->validate($value))->toBeFalse();
+})->with([
+    [DataType::STRING, 1],
+    [DataType::INT, true],
+    [DataType::FLOAT, new stdClass()],
+    [DataType::BOOL, "value"],
+]);
