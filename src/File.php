@@ -29,7 +29,7 @@ class File implements FileInterface
         $this->tempName = $file["tmp_name"] ?? "";
         $this->error = $file["error"] ?? UPLOAD_ERR_NO_FILE;
         $this->size = $file["size"] ?? 0;
-        $this->type = FileType::tryFrom($file["type"]);
+        $this->type = FileType::tryFrom($file["type"] ?? "");
     }
 
     public function getName(): string

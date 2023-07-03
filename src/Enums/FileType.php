@@ -133,6 +133,10 @@ enum FileType: string
      */
     public static function getFromExtension(string $extension): self
     {
+        if (empty($extension)) {
+            throw new InvalidExtensionException("extension '$extension' does not exists");
+        }
+
         if ($extension[0] !== ".") {
             $extension = ".$extension";
         }
