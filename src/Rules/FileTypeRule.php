@@ -6,7 +6,7 @@ namespace Enricky\RequestValidator\Rules;
 
 use Enricky\RequestValidator\Abstract\FileInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
-use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Types\FileType;
 
 class FileTypeRule extends ValidationRule
 {

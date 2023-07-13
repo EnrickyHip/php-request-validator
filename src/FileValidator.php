@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Enricky\RequestValidator;
 
 use Enricky\RequestValidator\Abstract\AttributeInterface;
-use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Types\FileType;
 use Enricky\RequestValidator\Rules\FileTypeRule;
 use Enricky\RequestValidator\Rules\IsFileRule;
 use Enricky\RequestValidator\Rules\MaxFileSizeRule;

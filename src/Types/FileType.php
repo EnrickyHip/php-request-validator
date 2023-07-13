@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Enricky\RequestValidator\Enums;
+namespace Enricky\RequestValidator\Types;
 
 use Enricky\RequestValidator\Exceptions\InvalidExtensionException;
 

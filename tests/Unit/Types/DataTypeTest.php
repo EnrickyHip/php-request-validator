@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Types\DataType;
 
 it("should validate with STRING if value is string", function (string $value) {
     expect(DataType::STRING->strictValidate($value))->toBeTrue();

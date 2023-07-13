@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Types\FileType;
 use Enricky\RequestValidator\Rules\IsFileRule;
 
 beforeEach(function () {

@@ -1,7 +1,7 @@
 <?php
 
 use Enricky\RequestValidator\Abstract\FileInterface;
-use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Types\FileType;
 
 class FileMock implements FileInterface
 {

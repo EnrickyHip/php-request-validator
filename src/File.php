@@ -3,7 +3,7 @@
 namespace Enricky\RequestValidator;
 
 use Enricky\RequestValidator\Abstract\FileInterface;
-use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Types\FileType;
 
 /**
  * Internal class to represent a multipart form-data file coming from $_POST.

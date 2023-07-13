@@ -4,28 +4,29 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Rules;
 
+use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
-use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Types\DataType;
 use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 
 
 /** Rule to validate the data type of a field. */
 class TypeRule extends ValidationRule
 {
-    private DataType $type;
+    private DataTypeInterface $type;
     private bool $strict;
     protected string $message = "field :name is not of type :type";
 
     /**
      * Create a new TypeRule instance.
      *
-     * @param DataType|string $type The data type to validate against.
+     * @param DataTypeInterface|string $type The data type to validate against.
      * @param string|null $message The custom error message for the rule.
      * @param bool $strict set strict type validation
      *
      * @throws InvalidDataTypeException If the provided data type is not part of DataType enum.
      */
-    public function __construct(DataType|string $type, ?string $message = null, bool $strict = true)
+    public function __construct(DataTypeInterface|string $type, ?string $message = null, bool $strict = true)
     {
         if (is_string($type)) {
             $type = DataType::tryFrom(strtolower($type));
@@ -39,7 +40,7 @@ class TypeRule extends ValidationRule
         $this->type = $type;
         $this->strict = $strict;
         $this->params = [
-            ":type" => $this->type->value,
+            ":type" => $this->type->getName(),
         ];
     }
 
@@ -56,7 +57,7 @@ class TypeRule extends ValidationRule
         return $this->type->validate($value);
     }
 
-    public function getType(): DataType
+    public function getType(): DataTypeInterface
     {
         return $this->type;
     }

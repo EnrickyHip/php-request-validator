@@ -2,7 +2,7 @@
 
 namespace Enricky\RequestValidator\Abstract;
 
-use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\Types\FileType;
 
 interface FileInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Types\DataType;
 
 dataset("correct_types", function () {
     return [

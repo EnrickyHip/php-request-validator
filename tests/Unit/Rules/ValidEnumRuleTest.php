@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Types\DataType;
 use Enricky\RequestValidator\Exceptions\InvalidEnumException;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\Rules\ValidEnumRule;

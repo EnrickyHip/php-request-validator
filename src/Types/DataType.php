@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Enricky\RequestValidator\Enums;
+namespace Enricky\RequestValidator\Types;
 
+use Enricky\RequestValidator\Abstract\DataTypeInterface;
 
 /** Enum representation of the data types that can be handled by the validators. */
-enum DataType: string
+enum DataType: string implements DataTypeInterface
 {
     /** DataType case representing a string. */
     case STRING = "string";
@@ -54,23 +55,29 @@ enum DataType: string
      */
     public function validate(mixed $value): bool
     {
-        $isIntString = function (mixed $value): bool {
-            if (!is_string($value)) {
-                return false;
-            }
-
-            if ($value[0] === '-') {
-                return ctype_digit(substr($value, 1));
-            }
-
-            return ctype_digit($value);
-        };
-
         return match ($this) {
             self::STRING => is_string($value),
-            self::INT => is_int($value) || $isIntString($value),
+            self::INT => is_int($value) || self::isIntString($value),
             self::FLOAT => is_numeric($value),
             self::BOOL => is_bool($value) || in_array($value, ["true", "false", 1, 0, "1", "0"], true),
         };
+    }
+
+    public function getName(): string
+    {
+        return $this->value;
+    }
+
+    private static function isIntString(mixed $value): bool
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+
+        if ($value[0] === '-') {
+            return ctype_digit(substr($value, 1));
+        }
+
+        return ctype_digit($value);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Enums\FileType;
-use Enricky\RequestValidator\FieldValidator;
+use Enricky\RequestValidator\Types\FileType;
 use Enricky\RequestValidator\FileValidator;
 use Enricky\RequestValidator\Rules\FileTypeRule;
 use Enricky\RequestValidator\Rules\IsFileRule;

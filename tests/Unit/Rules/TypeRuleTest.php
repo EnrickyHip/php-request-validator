@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Enums\DataType;
+use Enricky\RequestValidator\Types\DataType;
 use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 use Enricky\RequestValidator\Rules\TypeRule;
 
