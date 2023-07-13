@@ -1,6 +1,7 @@
 <?php
 
 use Enricky\RequestValidator\Enums\FileType;
+use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\FileValidator;
 use Enricky\RequestValidator\Rules\FileTypeRule;
 use Enricky\RequestValidator\Rules\IsFileRule;
@@ -16,6 +17,15 @@ it("should have IsFileRule by default", function () {
         ->toBeArray()
         ->toHaveLength(1)
         ->toContainOnlyInstancesOf(IsFileRule::class);
+});
+
+it("should not haveIsFileRule if file was not sent", function () {
+    $field = new AttributeMock("name", null);
+    $fileValidator = new FileValidator($field);
+
+    expect($fileValidator->getRules())
+        ->toBeArray()
+        ->toBeEmpty();
 });
 
 it("should add custom message to IsFileRule", function () {

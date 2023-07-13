@@ -243,7 +243,7 @@ it("should maintain values if they are not nullables on validateFile", function 
 })->with(["not null", "0", 0, fn () => [], false, true]);
 
 test("validateFile() should add custom rule to IsFileRule", function () {
-    $data = [];
+    $data = ["name" => []];
     $request = createRequest([], $data);
 
     $fileValidator = $request->validateFile("name", "invalid file");
