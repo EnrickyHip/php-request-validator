@@ -1,21 +1,21 @@
 <?php
 
-use Enricky\RequestValidator\Types\DataType;
+use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 use Enricky\RequestValidator\Rules\TypeRule;
 
 it("should not be a major rule", function () {
-    $typeRule = new TypeRule(DataType::INT);
+    $typeRule = new TypeRule(createType());
     expect($typeRule->isMajor())->toBeTrue();
 });
 
 it("should return the default error message", function () {
-    $typeRule = new TypeRule(DataType::INT);
+    $typeRule = new TypeRule(createType());
     expect($typeRule->getMessage())->toBe("field :name is not of type :type");
 });
 
 it("should return the custom error message", function () {
-    $typeRule = new TypeRule(DataType::INT, "wrong data type");
+    $typeRule = new TypeRule(createType(), "wrong data type");
     expect($typeRule->getMessage())->toBe("wrong data type");
 });
 
@@ -25,58 +25,46 @@ it("should throw InvalidDataTypeException if the data type sent as string does n
 })->with(["strin", "integer", "double", "boolean", "", "aaaaaa"]);
 
 it("should validate if sent value is null", function () {
-    $typeRule = new TypeRule(DataType::INT);
+    $typeRule = new TypeRule(createType());
     expect($typeRule->validate(null))->toBeTrue();
 });
 
-it("should validate if value type is correct", function (DataType|string $type, mixed $value) {
-    $typeRule = new TypeRule($type);
-    expect($typeRule->validate($value))->toBeTrue();
-})->with("correct_types");
+it("should validate on strict", function () {
+    $typeRule = new TypeRule(createType(false, true));
+    expect($typeRule->validate("value"))->toBeTrue();
+});
 
-it("should not validate if value type is not correct", function (DataType|string $type, mixed $value) {
-    $typeRule = new TypeRule($type);
-    expect($typeRule->validate($value))->toBeFalse();
-})->with("incorrect_types");
+it("should validate non strict", function () {
+    $typeRule = new TypeRule(createType(true, false), strict: false);
+    expect($typeRule->validate("value"))->toBeTrue();
+});
 
-it("should replace :type parameter with the correct type name", function (DataType $type) {
-    $typeRule = new TypeRule($type);
+it("should not validate on strict", function () {
+    $typeRule = new TypeRule(createType(true, false));
+    expect($typeRule->validate("value"))->toBeFalse();
+});
+
+it("should not validate on non strict", function () {
+    $typeRule = new TypeRule(createType(false, true), strict: false);
+    expect($typeRule->validate("value"))->toBeFalse();
+});
+
+it("should replace :type parameter with the correct type name", function (string $name) {
+    $typeRule = new TypeRule(createType(name: $name));
     $message = $typeRule->resolveMessage(new AttributeMock());
-    expect($message)->toBe("field 'name' is not of type '{$type->value}'");
-})->with(DataType::cases());
+    expect($message)->toBe("field 'name' is not of type '$name'");
+})->with(["name", "value", "other name"]);
 
 it("should return type", function () {
-    $typeRule1 = new TypeRule(DataType::INT);
-    $typeRule2 = new TypeRule(DataType::STRING);
-
-    expect($typeRule1->getType())->toBe(DataType::INT);
-    expect($typeRule2->getType())->toBe(DataType::STRING);
+    $type = createType();
+    $typeRule = new TypeRule($type);
+    expect($typeRule->getType())->toBe($type);
 });
 
 it("should get strict mode", function () {
-    $typeRule1 = new TypeRule(DataType::INT);
-    $typeRule2 = new TypeRule(DataType::INT, strict: false);
+    $typeRule1 = new TypeRule(createType());
+    $typeRule2 = new TypeRule(createType(), strict: false);
 
     expect($typeRule1->getStrictMode())->toBeTrue();
     expect($typeRule2->getStrictMode())->toBeFalse();
 });
-
-it("should validate on no strict", function (DataType $type, mixed $value) {
-    $typeRule = new TypeRule($type, strict: false);
-    expect($typeRule->validate($value))->toBeTrue();
-})->with([
-    [DataType::STRING, "value"],
-    [DataType::INT, "1"],
-    [DataType::FLOAT, "1.1"],
-    [DataType::BOOL, "true"],
-]);
-
-it("should not validate on no strict", function (DataType $type, mixed $value) {
-    $typeRule = new TypeRule($type, strict: false);
-    expect($typeRule->validate($value))->toBeFalse();
-})->with([
-    [DataType::STRING, 1],
-    [DataType::INT, true],
-    [DataType::FLOAT, new stdClass()],
-    [DataType::BOOL, "value"],
-]);
