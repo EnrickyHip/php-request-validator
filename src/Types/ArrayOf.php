@@ -3,6 +3,7 @@
 namespace Enricky\RequestValidator\Types;
 
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
+use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 
 class ArrayOf implements DataTypeInterface
 {
@@ -12,6 +13,9 @@ class ArrayOf implements DataTypeInterface
     {
         if (is_string($type)) {
             $type = DataType::tryFrom(strtolower($type));
+            if (!$type) {
+                throw new InvalidDataTypeException("Invalid data type '$type'");
+            }
         }
 
         $this->type = $type;

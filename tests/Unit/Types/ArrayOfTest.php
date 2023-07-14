@@ -1,6 +1,7 @@
 <?php
 
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
+use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 use Enricky\RequestValidator\Types\DataType;
 use Enricky\RequestValidator\Types\ArrayOf;
 
@@ -97,3 +98,8 @@ it("should not validate if one element does not have the specified type on non s
     [new ArrayOf("FLOAT"), fn () => [["1.5", false], ["10", 7.25]]],
     [new ArrayOf("STRING"), fn () => [["just", true], ["simple", "test"]]],
 ]);
+
+it("should throw InvalidDataTypeException if string type does not exists", function () {
+    $closure = fn () => new ArrayOf("type");
+    expect($closure)->toThrow(InvalidDataTypeException::class);
+});
