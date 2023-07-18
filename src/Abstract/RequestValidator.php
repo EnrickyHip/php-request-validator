@@ -58,7 +58,7 @@ abstract class RequestValidator
             $this->errors = [...$this->errors, ...$validator->getErrors()];
         }
 
-        return array_unique($this->errors);
+        return array_values(array_unique($this->errors));
     }
 
     /**
