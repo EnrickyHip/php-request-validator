@@ -3,6 +3,7 @@
 use Enricky\RequestValidator\Types\DataType;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\Rules\CustomRule;
+use Enricky\RequestValidator\Rules\IsArrayRule;
 use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
@@ -119,6 +120,33 @@ test("isEmail() should return self", function () {
 
     expect($fieldValidator->isEmail())->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->isEmail())->toBe($fieldValidator);
+});
+
+it("should add IsArrayRule", function () {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->isArray();
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(IsArrayRule::class);
+});
+
+it("should add IsArrayRule with custom message", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = (new FieldValidator($field))->isArray("invalid array");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("invalid array");
+});
+
+
+test("isArray() should return self", function () {
+    $field = new AttributeMock("name");
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->isArray())->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->isArray())->toBe($fieldValidator);
 });
 
 it("should add url rule", function () {

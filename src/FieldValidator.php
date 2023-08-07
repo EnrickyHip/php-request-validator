@@ -8,6 +8,7 @@ use Closure;
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Exceptions\InvalidEnumException;
 use Enricky\RequestValidator\Rules\CustomRule;
+use Enricky\RequestValidator\Rules\IsArrayRule;
 use Enricky\RequestValidator\Rules\IsDateStringRule;
 use Enricky\RequestValidator\Rules\IsEmailRule;
 use Enricky\RequestValidator\Rules\IsUrlRule;
@@ -113,6 +114,23 @@ class FieldValidator extends Validator
     public function isUrl(?string $message = null): self
     {
         $rule = new IsUrlRule($message);
+        $this->addRule($rule);
+        return $this;
+    }
+
+    //TODO need better documentation like "Force the field to be an array"
+    /**
+     * Add an array rule for a field.
+     *
+     * @param string|null $message Optional custom error message for the rule.
+     *
+     * ```php
+     * $this->validateField("field")->isUrl("invalid url");
+     * ```
+     */
+    public function isArray(?string $message = null): self
+    {
+        $rule = new IsArrayRule($message);
         $this->addRule($rule);
         return $this;
     }
