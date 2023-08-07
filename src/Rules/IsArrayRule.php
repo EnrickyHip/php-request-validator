@@ -15,4 +15,9 @@ class IsArrayRule extends ValidationRule
     {
         return is_array($value);
     }
+
+    public function isMajor(): bool
+    {
+        return true;
+    }
 }

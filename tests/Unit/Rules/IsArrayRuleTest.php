@@ -18,8 +18,8 @@ it("should not validate", function (mixed $value) {
     expect($this->arrayRule->validate($value))->toBeFalse();
 })->with(["1", 1, "value", true]);
 
-it("should not be a major rule", function () {
-    expect($this->arrayRule->isMajor())->toBeFalse();
+it("should be a major rule", function () {
+    expect($this->arrayRule->isMajor())->toBeTrue();
 });
 
 it("should return the default error message", function () {
