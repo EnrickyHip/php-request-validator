@@ -29,6 +29,10 @@ class MaxRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
+        if (is_array($value)) {
+            return count($value) <= $this->max;
+        }
+
         if (is_int($value) || is_float($value)) {
             return $value <= $this->max;
         }

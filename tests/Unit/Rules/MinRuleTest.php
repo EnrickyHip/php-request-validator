@@ -19,9 +19,9 @@ it("should return the correct error message", function () {
     expect($minRule->getMessage())->toBe("too small!");
 });
 
-it("should not validate if not sent a string", function (mixed $value) {
+it("should not validate if not sent a string, number or array", function (mixed $value) {
     expect($this->minRule->validate($value))->toBeFalse();
-})->with([1, true, [1, 2, 3], new stdClass()]);
+})->with([true, new stdClass()]);
 
 it("should not validate if value length is less than the minimum", function (string $value) {
     expect($this->minRule->validate($value))->toBeFalse();
@@ -56,3 +56,17 @@ it("should get min value", function (int|float $value) {
     $minRule = new MinRule($value);
     expect($minRule->getMin())->toBe($value);
 })->with([10, 1.1, 2, 3, 4.5, 12]);
+
+it("should not validate if array has less elements than the minimum", function (array $array) {
+    expect($this->minRule->validate($array))->toBeFalse();
+})->with([
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8],
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9]
+]);
+
+it("should validate if array doesnt have less elements than the minimum", function (array $array) {
+    expect($this->minRule->validate($array))->toBeTrue();
+})->with([
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+]);

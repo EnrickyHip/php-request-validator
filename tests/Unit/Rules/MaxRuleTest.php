@@ -19,9 +19,9 @@ it("should return the curtom error message", function () {
     expect($maxRule->getMessage())->toBe("too big!");
 });
 
-it("should not validate if not sent a string or a number", function (mixed $value) {
+it("should not validate if not sent a string, a number or an array", function (mixed $value) {
     expect($this->maxRule->validate($value))->toBeFalse();
-})->with([true, fn () => [1, 2, 3], new stdClass()]);
+})->with([true, new stdClass()]);
 
 it("should validate if value length is less or equal than the maximum", function (string $value) {
     expect($this->maxRule->validate($value))->toBeTrue();
@@ -51,6 +51,20 @@ it("should not validate if value is a number higher than the maximum", function 
 it("should validate if value is a number lower or equal than the maximum", function (int|float $number) {
     expect($this->maxRule->validate($number))->toBeTrue();
 })->with([10, 10.0, 9, 9.9, 1]);
+
+it("should not validate if array has more elements than the maximum", function (array $array) {
+    expect($this->maxRule->validate($array))->toBeFalse();
+})->with([
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+]);
+
+it("should validate if array doesnt have more elements than the maximum", function (array $array) {
+    expect($this->maxRule->validate($array))->toBeTrue();
+})->with([
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    fn () => [1, 2, 3, 4, 5, 6, 7, 8, 9]
+]);
 
 it("should get max value", function (int|float $value) {
     $maxRule = new MaxRule($value);
