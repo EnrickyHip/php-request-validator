@@ -103,3 +103,10 @@ it("should throw InvalidDataTypeException if string type does not exists", funct
     $closure = fn () => new ArrayOf("type");
     expect($closure)->toThrow(InvalidDataTypeException::class);
 });
+
+it("should get type", function (DataTypeInterface $type) {
+    $arrayOf = new ArrayOf($type);
+    expect($arrayOf->getType())->toBe($type);
+})->with([DataType::INT, DataType::FLOAT, new ArrayOf(), new ArrayOf(DataType::BOOL)]);
+
+

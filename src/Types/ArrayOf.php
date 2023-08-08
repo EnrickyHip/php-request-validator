@@ -67,4 +67,9 @@ class ArrayOf implements DataTypeInterface
 
         return $this->type->getName() . "[]";
     }
+
+    public function getType(): DataTypeInterface
+    {
+        return $this->type;
+    }
 }

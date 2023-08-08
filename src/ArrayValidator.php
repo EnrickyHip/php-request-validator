@@ -82,7 +82,10 @@ class ArrayValidator extends FieldValidator
             }
         }
 
-        if ($this->attribute->getValue() === null) {
+        //TODO talvez um array vazio retorne false quando requerido?? usar isRequired ou criar regra nova
+        $value = $this->attribute->getValue();
+
+        if ($value === null || empty($value)) {
             return true;
         }
 

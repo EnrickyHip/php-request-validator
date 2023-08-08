@@ -3,18 +3,23 @@
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
-function createRule(bool $valid, bool $isMajor = false): ValidationRule
+function createRule(bool|Closure $valid, bool $isMajor = false): ValidationRule
 {
     return new class($valid, $isMajor) extends ValidationRule
     {
         public function __construct(
-            private bool $valid,
+            private bool|Closure $valid,
             private bool $isMajor,
         ) {
         }
 
         public function validate(mixed $value): bool
         {
+            if ($this->valid instanceof Closure) {
+                $closure = $this->valid;
+                return $closure($value);
+            }
+
             return $this->valid;
         }
 
