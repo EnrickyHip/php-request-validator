@@ -17,7 +17,7 @@ it("should return the custom error message", function () {
     expect($matchRule->getMessage())->toBe("do not match");
 });
 
-it("should not validat id value is not a string", function (mixed $invalidType) {
+it("should not validate if value is not a string", function (mixed $invalidType) {
     $matchRule = new MatchRule("");
     expect($matchRule->validate($invalidType))->toBeFalse();
 })->with([true, 1, fn () => [], new stdClass]);

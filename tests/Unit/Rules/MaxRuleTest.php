@@ -14,7 +14,7 @@ it("should return the default error message", function () {
     expect($this->maxRule->getMessage())->toBe("field :name length is bigger than :max");
 });
 
-it("should return the curtom error message", function () {
+it("should return the custom error message", function () {
     $maxRule = new MaxRule(10, "too big!");
     expect($maxRule->getMessage())->toBe("too big!");
 });
