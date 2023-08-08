@@ -3,6 +3,7 @@
 use Enricky\RequestValidator\Abstract\RequestValidator;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Abstract\ValidatorInterface;
+use Enricky\RequestValidator\ArrayValidator;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\File;
 use Enricky\RequestValidator\FileValidator;
@@ -112,10 +113,7 @@ it("should not return duplicate errors", function () {
 
 it("should create field validators", function () {
     $data = ["name" => "Enricky"];
-    $request = createRequest([
-        createValidator(false, ["invalid1", "invalid2"]),
-        createValidator(false, ["invalid1"]),
-    ], $data);
+    $request = createRequest([], $data);
 
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateField("email");
@@ -123,6 +121,18 @@ it("should create field validators", function () {
     expect([$validator1, $validator2])->toContainOnlyInstancesOf(FieldValidator::class);
     expect($validator1->getName())->toBe("name");
     expect($validator1->getValue())->toBe("Enricky");
+});
+
+it("should create array validators", function () {
+    $data = ["numbers" => [1, 2, 3]];
+    $request = createRequest([], $data);
+
+    $validator1 = $request->validateArray("numbers");
+    $validator2 = $request->validateArray("array");
+
+    expect([$validator1, $validator2])->toContainOnlyInstancesOf(ArrayValidator::class);
+    expect($validator1->getName())->toBe("numbers");
+    expect($validator1->getValue())->toEqual([1, 2, 3]);
 });
 
 it("should create file validators", function () {
@@ -152,7 +162,7 @@ it("should create file validators", function () {
     expect($validator1->getValue())->toBeInstanceOf(File::class);
 });
 
-it("should set null if key does not exist on call validateField or validateFile", function () {
+it("should set null if key does not exist on call validateField, validateFile and validateArray", function () {
     $data = [];
     $request = createRequest([
         createValidator(false, []),
@@ -160,12 +170,14 @@ it("should set null if key does not exist on call validateField or validateFile"
 
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
+    $validator3 = $request->validateArray("name");
 
     expect($validator1->getValue())->toBe(null);
     expect($validator2->getValue())->toBe(null);
+    expect($validator3->getValue())->toBe(null);
 });
 
-it("should set null if value is an nullable string on call validateField or validateFile", function (string $value) {
+it("should set null if value is an nullable string on call validateField, validateFile and validateArray", function (string $value) {
     $data = ["name" => $value];
     $request = createRequest([
         createValidator(false, []),
@@ -173,9 +185,11 @@ it("should set null if value is an nullable string on call validateField or vali
 
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
+    $validator3 = $request->validateArray("name");
 
     expect($validator1->getValue())->toBe(null);
     expect($validator2->getValue())->toBe(null);
+    expect($validator3->getValue())->toBe(null);
 })->with(["null", "", "undefined"]);
 
 it("should set value to null in the original array if value is an nullable string on call validateField", function (string $value) {
@@ -196,6 +210,17 @@ it("should set value to null in the original array if value is an nullable strin
     ], $data);
 
     $request->validateFile("name");
+
+    expect($data["name"])->toBe(null);
+})->with(["null", "", "undefined"]);
+
+it("should set value to null in the original array if value is an nullable string on call validateArray", function (string $value) {
+    $data = ["name" => $value];
+    $request = createRequest([
+        createValidator(false, []),
+    ], $data);
+
+    $request->validateArray("name");
 
     expect($data["name"])->toBe(null);
 })->with(["null", "", "undefined"]);
@@ -222,6 +247,17 @@ it("should set value to null in the original array if value is not sent on call 
     expect($data["email"])->toBe(null);
 })->with(["null", "", "undefined"]);
 
+it("should set value to null in the original array if value is not sent on call validateArray", function (string $value) {
+    $data = ["name" => $value];
+    $request = createRequest([
+        createValidator(false, []),
+    ], $data);
+
+    $request->validateArray("email");
+
+    expect($data["email"])->toBe(null);
+})->with(["null", "", "undefined"]);
+
 it("should maintain values if they are not nullables on validateField", function (mixed $value) {
     $data = ["name" => $value];
     $request = createRequest([
@@ -239,6 +275,16 @@ it("should maintain values if they are not nullables on validateFile", function 
     ], $data);
 
     $request->validateFile("name");
+    expect($data["name"])->toBe($value);
+})->with(["not null", "0", 0, fn () => [], false, true]);
+
+it("should maintain values if they are not nullables on validateArray", function (mixed $value) {
+    $data = ["name" => $value];
+    $request = createRequest([
+        createValidator(false, []),
+    ], $data);
+
+    $request->validateArray("name");
     expect($data["name"])->toBe($value);
 })->with(["not null", "0", 0, fn () => [], false, true]);
 

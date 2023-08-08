@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Abstract;
 
+use Enricky\RequestValidator\ArrayValidator;
 use Enricky\RequestValidator\Attribute;
 use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\File;
@@ -158,6 +159,18 @@ abstract class RequestValidator
 
         $attriubte = new Attribute($name, $value);
         return new FileValidator($attriubte, $message);
+    }
+
+    final public function validateArray(string $name, ?string $message = null): ArrayValidator
+    {
+        $value = null;
+
+        if (!$this->checkEmpty($name)) {
+            $value = $this->data[$name];
+        }
+
+        $attriubte = new Attribute($name, $value);
+        return new ArrayValidator($attriubte, $message);
     }
 
     private function checkEmpty(mixed $name): bool
