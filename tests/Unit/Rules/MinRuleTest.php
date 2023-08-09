@@ -31,7 +31,7 @@ it("should not validate if value length is less than the minimum", function (str
     "aaaaaaaaa",
 ]);
 
-it("should validate if value length is bigger than or equal the maximum", function (string $value) {
+it("should validate if value length is bigger than or equal the minimum", function (string $value) {
     expect($this->minRule->validate($value))->toBeTrue();
 })->with([
     "aaaaaaaaaa",

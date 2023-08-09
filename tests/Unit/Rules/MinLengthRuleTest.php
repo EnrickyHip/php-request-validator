@@ -11,7 +11,7 @@ it("should be a major rule", function () {
 });
 
 it("should return the default error message", function () {
-    expect($this->rule->getMessage())->toBe("array :name length is lower than :max");
+    expect($this->rule->getMessage())->toBe("array :name length is lower than :min");
 });
 
 it("should return the custom error message", function () {
