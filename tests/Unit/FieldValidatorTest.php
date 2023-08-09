@@ -10,6 +10,7 @@ use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\MaxRule;
 use Enricky\RequestValidator\Rules\MinRule;
+use Enricky\RequestValidator\Rules\NotEmptyRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 use Enricky\RequestValidator\Rules\ValidEnumRule;
 
@@ -147,6 +148,33 @@ test("isArray() should return self", function () {
 
     expect($fieldValidator->isArray())->toBeInstanceOf(FieldValidator::class);
     expect($fieldValidator->isArray())->toBe($fieldValidator);
+});
+
+it("should add NotEmptyRule", function () {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->notEmpty();
+
+    expect($fieldValidator->getRules())
+        ->toBeArray()
+        ->toHaveLength(1)
+        ->toContainOnlyInstancesOf(NotEmptyRule::class);
+});
+
+it("should add NotEmptyRule with custom message", function () {
+    $field = new AttributeMock();
+    $fieldValidator = (new FieldValidator($field))->notEmpty("is empty");
+
+    $rule = $fieldValidator->getRules()[0];
+    expect($rule->getMessage())->toBe("is empty");
+});
+
+
+test("notEmpty() should return self", function () {
+    $field = new AttributeMock();
+    $fieldValidator = new FieldValidator($field);
+
+    expect($fieldValidator->notEmpty())->toBeInstanceOf(FieldValidator::class);
+    expect($fieldValidator->notEmpty())->toBe($fieldValidator);
 });
 
 it("should add url rule", function () {

@@ -15,6 +15,7 @@ use Enricky\RequestValidator\Rules\IsUrlRule;
 use Enricky\RequestValidator\Rules\MatchRule;
 use Enricky\RequestValidator\Rules\MaxRule;
 use Enricky\RequestValidator\Rules\MinRule;
+use Enricky\RequestValidator\Rules\NotEmptyRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 use Enricky\RequestValidator\Rules\ValidEnumRule;
 
@@ -131,6 +132,22 @@ class FieldValidator extends Validator
     public function isArray(?string $message = null): self
     {
         $rule = new IsArrayRule($message);
+        $this->addRule($rule);
+        return $this;
+    }
+    /**
+     * force a field to not be empty
+     *
+     * @param string|null $message Optional custom error message for the rule.
+     *
+     * ```php
+     * $this->validateField("field")->notEmpty("is empty");
+     * ```
+     * 
+     */
+    public function notEmpty(?string $message = null): self
+    {
+        $rule = new NotEmptyRule($message);
         $this->addRule($rule);
         return $this;
     }
