@@ -7,6 +7,8 @@ namespace Enricky\RequestValidator;
 use Enricky\RequestValidator\Abstract\AttributeInterface;
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Rules\IsArrayRule;
+use Enricky\RequestValidator\Rules\MaxLengthRule;
+use Enricky\RequestValidator\Rules\MinLengthRule;
 use Enricky\RequestValidator\Rules\TypeRule;
 use Enricky\RequestValidator\Types\ArrayOf;
 
@@ -68,6 +70,20 @@ class ArrayValidator extends FieldValidator
         $this->addRule($rule);
         return $this;
     }
+
+    public function maxLength(int $max, ?string $message = null): self
+    {
+        $rule = new MaxLengthRule($max, $message);
+        $this->addRule($rule);
+        return $this;
+    } 
+
+    public function minLength(int $min, ?string $message = null): self
+    {
+        $rule = new MinLengthRule($min, $message);
+        $this->addRule($rule);
+        return $this;
+    } 
 
     public function validate(): bool
     {

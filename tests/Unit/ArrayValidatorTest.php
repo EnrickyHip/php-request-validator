@@ -3,6 +3,8 @@
 use Enricky\RequestValidator\Types\DataType;
 use Enricky\RequestValidator\ArrayValidator;
 use Enricky\RequestValidator\Rules\IsArrayRule;
+use Enricky\RequestValidator\Rules\MaxLengthRule;
+use Enricky\RequestValidator\Rules\MinLengthRule;
 
 beforeEach(function () {
     $field = new AttributeMock(value: []);
@@ -180,4 +182,56 @@ it("should not be prohibited if condition is false", function () {
 
     $validator2 = (new ArrayValidator($nullField))->prohibitedIf(false);
     expect($validator2->validate())->toBeTrue();
+});
+
+it("should add MaxLengthRule", function () {
+    $this->validator->maxLength(10);
+
+    expect($this->validator->getRules())
+        ->toBeArray()
+        ->toHaveLength(2);
+    
+    expect($this->validator->getRules()[1])->toBeInstanceOf(MaxLengthRule::class);
+});
+
+it("should add MaxLengthRule with custom message", function () {
+    $this->validator->maxLength(10, "max length");
+
+    $rule =  $this->validator->getRules()[1];
+    expect($rule->getMessage())->toBe("max length");
+});
+
+
+test("maxLength() should return self", function () {
+    $field = new AttributeMock();
+    $arrayValidator = new ArrayValidator($field);
+
+    expect($arrayValidator->maxLength(10))->toBeInstanceOf(ArrayValidator::class);
+    expect($arrayValidator->maxLength(10))->toBe($arrayValidator);
+});
+
+it("should add MinLengthRule", function () {
+    $this->validator->minLength(10);
+
+    expect($this->validator->getRules())
+        ->toBeArray()
+        ->toHaveLength(2);
+    
+    expect($this->validator->getRules()[1])->toBeInstanceOf(MinLengthRule::class);
+});
+
+it("should add MinLengthRule with custom message", function () {
+    $this->validator->minLength(10, "min length");
+
+    $rule =  $this->validator->getRules()[1];
+    expect($rule->getMessage())->toBe("min length");
+});
+
+
+test("minLength() should return self", function () {
+    $field = new AttributeMock();
+    $arrayValidator = new ArrayValidator($field);
+
+    expect($arrayValidator->minLength(10))->toBeInstanceOf(ArrayValidator::class);
+    expect($arrayValidator->minLength(10))->toBe($arrayValidator);
 });
