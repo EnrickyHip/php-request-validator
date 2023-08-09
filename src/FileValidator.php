@@ -42,8 +42,8 @@ class FileValidator extends Validator
     }
 
     /**
-     * Add a type validation for a file.
-     * This is a facade method to easily add a FileTypeRule validation.
+     * force a file to have an specific mime type (extension).
+     * 
      * @param (FileType|string)[]|string|FileType $types allowed types
      * @param ?string $message optional custom message
      * @return FileValidator The instance of FileValidator to allow chaining another validation rules.
@@ -69,8 +69,8 @@ class FileValidator extends Validator
     }
 
     /**
-     * Add a max size validation for a file.
-     * This is a facade method to easily add a MaxFileSizeRule validation.
+     * force a file to have a maximum size.
+     * 
      * @param int $size max size allowed in bytes.
      * @param ?string $message optional custom message
      * @return FileValidator The instance of FileValidator to allow chaining another validation rules.

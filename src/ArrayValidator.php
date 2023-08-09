@@ -45,9 +45,8 @@ class ArrayValidator extends FieldValidator
     }
 
     /**
-     * Add a data type validation for elements in the array.
-     * This is a facade method to easily add a TypeRule validation.
-     * @param DataTypeInterface|string $type expected field type.
+     * force all elements in a array to be of an specfific data type.
+     * @param DataTypeInterface|string $type expected elements type.
      * @param ?string $message optional custom message
      * @param bool $strict set strict type validation
      * @return ArrayValidator The instance of ArrayValidator to allow chaining another validation rules.
@@ -71,6 +70,13 @@ class ArrayValidator extends FieldValidator
         return $this;
     }
 
+    
+    /**
+     * force an array to have a maximum length.
+     *
+     * @param int|float $min The maximum length allowed for the array.
+     * @param string|null $message The custom error message for the rule.
+     */
     public function maxLength(int $max, ?string $message = null): self
     {
         $rule = new MaxLengthRule($max, $message);
@@ -78,6 +84,12 @@ class ArrayValidator extends FieldValidator
         return $this;
     } 
 
+    /**
+     * force an array to have a minimum length.
+     *
+     * @param int|float $min The minimum length allowed for the array.
+     * @param string|null $message The custom error message for the rule.
+     */
     public function minLength(int $min, ?string $message = null): self
     {
         $rule = new MinLengthRule($min, $message);

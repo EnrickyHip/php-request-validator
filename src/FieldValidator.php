@@ -42,8 +42,7 @@ use Enricky\RequestValidator\Rules\ValidEnumRule;
 class FieldValidator extends Validator
 {
     /**
-     * Add a data type validation for a field.
-     * This is a facade method to easily add a TypeRule validation.
+     * force a field to have an specific data type.
      * @param DataTypeInterface|string $type expected field type.
      * @param ?string $message optional custom message
      * @param bool $strict set strict type validation
@@ -87,7 +86,7 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Add a email rule for a field.
+     * force a field to be an email.
      *
      * @param string|null $message Optional custom error message for the rule.
      *
@@ -103,7 +102,7 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Add a url rule for a field.
+     * force a field to be an url.
      *
      * @param string|null $message Optional custom error message for the rule.
      *
@@ -118,15 +117,16 @@ class FieldValidator extends Validator
         return $this;
     }
 
-    //TODO need better documentation like "Force the field to be an array"
     /**
-     * Add an array rule for a field.
+     * force a field to be an array.
      *
      * @param string|null $message Optional custom error message for the rule.
      *
      * ```php
-     * $this->validateField("field")->isUrl("invalid url");
+     * $this->validateField("field")->isArray("not an array");
      * ```
+     * 
+     * consider using `RequestValidator::validateArray()` to a better array validation.
      */
     public function isArray(?string $message = null): self
     {
@@ -136,7 +136,7 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Add a match rule for a field.
+     * force a field to match a given pattern.
      *
      * @param string $match The regular expression pattern to match against.
      * @param string|null $message The match error message for the rule.
@@ -149,7 +149,7 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Add a date string rule for a field.
+     * force a field to be a valid date string.
      *
      * @param string $format The expected format for the date string (default: "Y-m-d").
      * @param string|null $message The custom error message for the rule.
@@ -163,7 +163,10 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Add a max rule for a field.
+     * force a field to have a maximum length or value.
+     * If given a string this rule will force the string to have a maximum length. 
+     * If given a number this rule will force the number to have maximum value.
+     * If given an array this rule will force the array to have maximum length.
      *
      * @param int|float $max The maximum length allowed for the string field.
      * @param string|null $message The custom error message for the rule.
@@ -176,7 +179,10 @@ class FieldValidator extends Validator
     }
 
     /**
-     * Add a min rule for a field.
+     * force a field to have a maximum length or value.
+     * If given a string this rule will force the string to have a maximum length. 
+     * If given a number this rule will force the number to have maximum value.
+     * If given an array this rule will force the array to have maximum length.
      *
      * @param int|float $min The minimum length allowed for the string field.
      * @param string|null $message The custom error message for the rule.
@@ -190,7 +196,7 @@ class FieldValidator extends Validator
 
 
     /**
-     * Create a new ValidEnumRule instance.
+     * force a field to be a valid enum value of a given PHP enum class.
      *
      * @param string $enumClass The class name of the enum.
      * @param string|null $message The custom error message for the rule.
