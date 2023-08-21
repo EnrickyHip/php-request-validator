@@ -63,7 +63,7 @@ class ArrayValidator extends FieldValidator
      * $this->validateArray("age")->type("int");
      * ```
      */
-    public function type(DataTypeInterface|string $type, ?string $message = null, bool $strict = true): self
+    public function type(DataTypeInterface|string $type, ?string $message = null, bool $strict = true): static
     {
         $rule = new TypeRule(new ArrayOf($type), $message, $strict);
         $this->addRule($rule);
@@ -76,7 +76,7 @@ class ArrayValidator extends FieldValidator
      * @param int|float $min The maximum length allowed for the array.
      * @param string|null $message The custom error message for the rule.
      */
-    public function maxLength(int $max, ?string $message = null): self
+    public function maxLength(int $max, ?string $message = null): static
     {
         $rule = new MaxLengthRule($max, $message);
         $this->addRule($rule);
@@ -89,7 +89,7 @@ class ArrayValidator extends FieldValidator
      * @param int|float $min The minimum length allowed for the array.
      * @param string|null $message The custom error message for the rule.
      */
-    public function minLength(int $min, ?string $message = null): self
+    public function minLength(int $min, ?string $message = null): static
     {
         $rule = new MinLengthRule($min, $message);
         $this->addRule($rule);
