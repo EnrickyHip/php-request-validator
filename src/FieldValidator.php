@@ -181,7 +181,7 @@ class FieldValidator extends Validator
 
     /**
      * force a field to have a maximum length or value.
-     * If given a string this rule will force the string to have a maximum length. 
+     * If given a string this rule will force the string to have a maximum length.
      * If given a number this rule will force the number to have maximum value.
      * If given an array this rule will force the array to have maximum length.
      *
@@ -197,7 +197,7 @@ class FieldValidator extends Validator
 
     /**
      * force a field to have a maximum length or value.
-     * If given a string this rule will force the string to have a maximum length. 
+     * If given a string this rule will force the string to have a maximum length.
      * If given a number this rule will force the number to have maximum value.
      * If given an array this rule will force the array to have maximum length.
      *

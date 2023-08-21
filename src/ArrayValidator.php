@@ -70,7 +70,6 @@ class ArrayValidator extends FieldValidator
         return $this;
     }
 
-    
     /**
      * force an array to have a maximum length.
      *
@@ -82,7 +81,7 @@ class ArrayValidator extends FieldValidator
         $rule = new MaxLengthRule($max, $message);
         $this->addRule($rule);
         return $this;
-    } 
+    }
 
     /**
      * force an array to have a minimum length.
@@ -95,7 +94,7 @@ class ArrayValidator extends FieldValidator
         $rule = new MinLengthRule($min, $message);
         $this->addRule($rule);
         return $this;
-    } 
+    }
 
     public function validate(): bool
     {
@@ -118,10 +117,9 @@ class ArrayValidator extends FieldValidator
         }
 
         foreach ($this->rules as $rule) {
-            foreach ($this->attribute->getValue() as $element) {
+            foreach ($this->attribute->getValue() as $index => $element) {
                 if (!$rule->validate($element)) {
-                    $this->errors[] = $rule->resolveMessage($this->attribute);
-
+                    $this->errors[] = $rule->resolveArrayMessage($this->attribute, $index);
                 }
             }
         }

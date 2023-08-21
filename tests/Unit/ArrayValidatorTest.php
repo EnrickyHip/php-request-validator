@@ -190,7 +190,7 @@ it("should add MaxLengthRule", function () {
     expect($this->validator->getRules())
         ->toBeArray()
         ->toHaveLength(2);
-    
+
     expect($this->validator->getRules()[1])->toBeInstanceOf(MaxLengthRule::class);
 });
 
@@ -216,7 +216,7 @@ it("should add MinLengthRule", function () {
     expect($this->validator->getRules())
         ->toBeArray()
         ->toHaveLength(2);
-    
+
     expect($this->validator->getRules()[1])->toBeInstanceOf(MinLengthRule::class);
 });
 
@@ -234,4 +234,15 @@ test("minLength() should return self", function () {
 
     expect($arrayValidator->minLength(10))->toBeInstanceOf(ArrayValidator::class);
     expect($arrayValidator->minLength(10))->toBe($arrayValidator);
+});
+
+it("should replace :value with [array] in message on major rules", function () {
+    $this->validator->minLength(10, ":value does not have a min length");
+    expect($this->validator->getErrors()[0])->toBe("[array] does not have a min length");
+});
+
+it("should replace :value with element value in message when rule is not major", function () {
+    $field = new AttributeMock(value: [8, 11, 12, 9]);
+    $validator = (new ArrayValidator($field))->max(10, ":value is bigger than max value :max");
+    expect($validator->getErrors()[0])->toBe("11 is bigger than max value 10");
 });

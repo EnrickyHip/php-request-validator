@@ -3,13 +3,14 @@
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 
-function createRule(bool|Closure $valid, bool $isMajor = false): ValidationRule
+function createRule(bool|Closure $valid, bool $isMajor = false, string $message = "field :name is invalid"): ValidationRule
 {
-    return new class($valid, $isMajor) extends ValidationRule
+    return new class($valid, $isMajor, $message) extends ValidationRule
     {
         public function __construct(
             private bool|Closure $valid,
             private bool $isMajor,
+            protected string $message,
         ) {
         }
 
