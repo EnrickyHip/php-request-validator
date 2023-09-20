@@ -44,7 +44,7 @@ class FieldValidator extends Validator
 {
     /**
      * force a field to have an specific data type.
-     * @param DataTypeInterface|string $type expected field type.
+     * @param DataTypeInterface|string|(string|DataTypeInterface)[] $types expected field types.
      * @param ?string $message optional custom message
      * @param bool $strict set strict type validation
      * @return FieldValidator The instance of FieldValidator to allow chaining another validation rules.
@@ -60,10 +60,15 @@ class FieldValidator extends Validator
      * ```php
      * $this->validateField("age")->type("int");
      * ```
+     * checking against multiple types (validate if the value is a string or an integer):
+     *
+     * ```php
+     * $this->validateField("age")->type(["int", DataType::STRING]);
+     * ```
      */
-    public function type(DataTypeInterface|string $type, ?string $message = null, bool $strict = true): static
+    public function type(DataTypeInterface|string|array $types, ?string $message = null, bool $strict = true): static
     {
-        $rule = new TypeRule($type, $message, $strict);
+        $rule = new TypeRule($types, $message, $strict);
         $this->addRule($rule);
         return $this;
     }

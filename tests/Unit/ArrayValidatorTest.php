@@ -18,7 +18,7 @@ it("should have IsArray by default", function () {
         ->toContainOnlyInstancesOf(IsArrayRule::class);
 });
 
-it("should add type rule with array of the correct type", function (DataType $type) {
+it("should add type rule with array of the correct type", function (DataType|array|string $type, DataType|array $expectedType) {
     $field = new AttributeMock();
     $fieldValidator = (new ArrayValidator($field))->type($type);
 
@@ -27,8 +27,14 @@ it("should add type rule with array of the correct type", function (DataType $ty
         ->toHaveLength(2);
 
     $rule = (object)$fieldValidator->getRules()[1];
-    expect($rule->getType()->getType())->toBe($type);
-})->with([DataType::STRING, DataType::INT, DataType::FLOAT]);
+    expect($rule->getType()->getType())->toBe($expectedType);
+})->with([
+    [DataType::STRING, DataType::STRING],
+    [DataType::INT, DataType::INT],
+    ["float", DataType::FLOAT],
+    [fn () => [DataType::INT, DataType::FLOAT], fn () => [DataType::INT, DataType::FLOAT]],
+    [fn () => ["string", "int", "bool"], fn () => [DataType::STRING, DataType::INT, DataType::BOOL]],
+]);
 
 it("should be valid if value is array", function () {
     expect($this->validator->validate())->toBeTrue();
