@@ -109,7 +109,6 @@ class TypeRule extends ValidationRule
         return $this->types->getName();
     }
 
-    //TODO revisar esse método. é necessário? não faz mais do que deveria? porque não lançar o erro interno do enum?
     /**
      * @throws InvalidDataTypeException If the provided data type is not part of DataType enum.
      */

@@ -39,64 +39,12 @@ class ArrayOf implements DataTypeInterface
 
     public function strictValidate(mixed $value): bool
     {
-        if (!is_array($value)) {
-            return false;
-        }
-
-        if (!$this->types) {
-            return true;
-        }
-
-        if (is_array($this->types)) {
-            foreach ($value as $element) {
-                $elementIsValid = $this->strictValidateAgainstTypes($element);
-
-                if (!$elementIsValid) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        foreach ($value as $element) {
-            if (!$this->types->strictValidate($element)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->validateArray($value, strict: true);
     }
 
     public function validate(mixed $value): bool
     {
-        if (!is_array($value)) {
-            return false;
-        }
-
-        if (!$this->types) {
-            return true;
-        }
-
-        if (is_array($this->types)) {
-            foreach ($value as $element) {
-                $elementIsValid = $this->validateAgainstTypes($element);
-
-                if (!$elementIsValid) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        foreach ($value as $element) {
-            if (!$this->types->validate($element)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->validateArray($value, strict: false);
     }
 
     public function getName(): string
@@ -119,26 +67,51 @@ class ArrayOf implements DataTypeInterface
         return $this->types;
     }
 
-    //TODO talvez unir esses métodos de validate?
-    private function strictValidateAgainstTypes(mixed $element)
+    private function validateArray(mixed $value, bool $strict): bool
     {
-        $elementIsValid = false;
+        if (!is_array($value)) {
+            return false;
+        }
 
-        foreach ($this->types as $type) {
-            if ($type->strictValidate($element)) {
-                $elementIsValid = true;
+        if (!$this->types) {
+            return true;
+        }
+
+        if (is_array($this->types)) {
+            foreach ($value as $element) {
+                $elementIsValid = $this->validateAgainstTypes($element, $strict);
+
+                if (!$elementIsValid) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        foreach ($value as $element) {
+            if (!$strict && !$this->types->validate($element)) {
+                return false;
+            }
+
+            if ($strict && !$this->types->strictValidate($element)) {
+                return false;
             }
         }
 
-        return $elementIsValid;
+        return true;
     }
 
-    private function validateAgainstTypes(mixed $element)
+    private function validateAgainstTypes(mixed $element, bool $strict): bool
     {
         $elementIsValid = false;
 
         foreach ($this->types as $type) {
-            if ($type->validate($element)) {
+            if ($strict && $type->strictValidate($element)) {
+                $elementIsValid = true;
+            }
+
+            if (!$strict && $type->validate($element)) {
                 $elementIsValid = true;
             }
         }
