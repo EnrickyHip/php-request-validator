@@ -10,6 +10,7 @@ use Enricky\RequestValidator\Rules\IsArrayRule;
 use Enricky\RequestValidator\Rules\MaxLengthRule;
 use Enricky\RequestValidator\Rules\MinLengthRule;
 use Enricky\RequestValidator\Rules\TypeRule;
+use Enricky\RequestValidator\Traits\FieldRuleFactories;
 use Enricky\RequestValidator\Types\ArrayOf;
 
 /**
@@ -33,8 +34,10 @@ use Enricky\RequestValidator\Types\ArrayOf;
  * ```
  * @internal
  */
-class ArrayValidator extends FieldValidator
+class ArrayValidator extends Validator
 {
+    use FieldRuleFactories;
+
     public function __construct(AttributeInterface $attribute, ?string $message = null)
     {
         parent::__construct($attribute);

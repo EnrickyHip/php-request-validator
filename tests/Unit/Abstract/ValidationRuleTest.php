@@ -43,12 +43,12 @@ it("should replace :name param on message", function (AttributeInterface $field)
     fn () => new AttributeMock("email", "enricky@email.com"),
 ]);
 
-it("should replace :name param on message for array", function (AttributeInterface $field) {
+it("should replace :name param on message for array", function (AttributeInterface $field, int|string $key) {
     $fieldName = $field->getName();
-    expect($this->testRule->resolveArrayMessage($field, 0))->toBe("field '$fieldName' is invalid");
+    expect($this->testRule->resolveArrayMessage($field, $key))->toBe("field '$fieldName' is invalid");
 })->with([
-    fn () => new AttributeMock("name", [1, 2, 3]),
-    fn () => new AttributeMock("email", ["key" => "value"]),
+    fn () => [new AttributeMock("name", [1, 2, 3]), 0],
+    fn () => [new AttributeMock("email", ["key" => "value"]), "key"],
 ]);
 
 it("should replace :value param on message", function (mixed $value, string $resolvedValue) {
