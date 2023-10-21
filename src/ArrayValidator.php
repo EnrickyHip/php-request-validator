@@ -46,7 +46,7 @@ class ArrayValidator extends FieldValidator
 
     /**
      * force all elements in a array to be of an specfific data type.
-     * @param DataTypeInterface|string $type expected elements type.
+     * @param DataTypeInterface|string|(DataTypeInterface|string)[] $types expected elements types.
      * @param ?string $message optional custom message
      * @param bool $strict set strict type validation
      * @return ArrayValidator The instance of ArrayValidator to allow chaining another validation rules.
@@ -54,35 +54,40 @@ class ArrayValidator extends FieldValidator
      * Call using `DataType` enum:
      *
      * ```php
-     * $this->validateArray("age")->type(DataType::INT);
+     * $this->validateArray("ages")->type(DataType::INT);
      * ```
      *
      * or using strings:
      *
      * ```php
-     * $this->validateArray("age")->type("int");
+     * $this->validateArray("ages")->type("int");
+     * ```
+     *
+     * checking against multiple types (validate if the value is a string or an integer):
+     *
+     * ```php
+     * $this->validateArray("ages")->type(["int", DataType::STRING]);
      * ```
      */
-    public function type(DataTypeInterface|string $type, ?string $message = null, bool $strict = true): self
+    public function type(DataTypeInterface|string|array $type, ?string $message = null, bool $strict = true): static
     {
         $rule = new TypeRule(new ArrayOf($type), $message, $strict);
         $this->addRule($rule);
         return $this;
     }
 
-    
     /**
      * force an array to have a maximum length.
      *
      * @param int|float $min The maximum length allowed for the array.
      * @param string|null $message The custom error message for the rule.
      */
-    public function maxLength(int $max, ?string $message = null): self
+    public function maxLength(int $max, ?string $message = null): static
     {
         $rule = new MaxLengthRule($max, $message);
         $this->addRule($rule);
         return $this;
-    } 
+    }
 
     /**
      * force an array to have a minimum length.
@@ -90,12 +95,12 @@ class ArrayValidator extends FieldValidator
      * @param int|float $min The minimum length allowed for the array.
      * @param string|null $message The custom error message for the rule.
      */
-    public function minLength(int $min, ?string $message = null): self
+    public function minLength(int $min, ?string $message = null): static
     {
         $rule = new MinLengthRule($min, $message);
         $this->addRule($rule);
         return $this;
-    } 
+    }
 
     public function validate(): bool
     {
@@ -110,7 +115,6 @@ class ArrayValidator extends FieldValidator
             }
         }
 
-        //TODO talvez um array vazio retorne false quando requerido?? usar isRequired ou criar regra nova
         $value = $this->attribute->getValue();
 
         if ($value === null || empty($value)) {
@@ -118,10 +122,9 @@ class ArrayValidator extends FieldValidator
         }
 
         foreach ($this->rules as $rule) {
-            foreach ($this->attribute->getValue() as $element) {
+            foreach ($this->attribute->getValue() as $index => $element) {
                 if (!$rule->validate($element)) {
-                    $this->errors[] = $rule->resolveMessage($this->attribute);
-
+                    $this->errors[] = $rule->resolveArrayMessage($this->attribute, $index);
                 }
             }
         }

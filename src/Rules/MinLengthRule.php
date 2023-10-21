@@ -29,7 +29,6 @@ class MinLengthRule extends ValidationRule
 
     public function validate(mixed $value): bool
     {
-        //TODO talvez alterar a mensagem nesses casos e invalidar seria interessante.
         if (!is_array($value)) {
             return false;
         }

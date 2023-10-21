@@ -57,7 +57,6 @@ abstract class ValidationRule
     }
 
     /**
-     * @internal
      * Resolve the error message by replacing placeholders with actual values.
      * The two placeholders `:name` and `:value` are built in and will be replaced automatically.
      *
@@ -88,17 +87,62 @@ abstract class ValidationRule
      *
      * This way, the placeholders `:param1` and `:param2` will be replaced by the respective values.
      * The use of colons in the beggining is not mandatory, but recommended.
+     *
+     * @internal
      */
     final public function resolveMessage(AttributeInterface $attribute): string
     {
-        $stringifiedParams = array_map(function ($value) {
-            return $this->stringifyParam($value);
-        }, $this->params);
 
         $params = [
-            ...$stringifiedParams,
+            ...$this->stringifyCustomParams(),
             ":name" => $this->stringifyParam($attribute->getName()),
             ":value" => $this->stringifyParam($attribute->getValue()),
+        ];
+
+        return $this->replaceParams($params);
+    }
+
+    /**
+     * Resolve the error message by replacing placeholders with actual values for arrays.
+     * The two placeholders `:name` and `:value` are built in and will be replaced automatically.
+     *
+     * @param AttributeInterface $attribute The attribute being validated.
+     * @param int|string $index The array index of the element to be replaced by :name.
+     * @return string The resolved error message.
+     *
+     * If you want to create your own placeholders, set the property `$this->params` inside your constructor and add the placeholders to the property `$this->message`:
+     *
+     * ```php
+     * class YourRule extends ValidationRule
+     * {
+     *      protected string $message = "Attribute :name is invalid with parameters :param1 and :param2";
+     *      private string $param1;
+     *      private string $param2;
+     *
+     *      public function __construct(string $param1, int $param2)
+     *      {
+     *          $this->param1 = $param1;
+     *          $this->param2 = $param2;
+     *
+     *          $this->params = [
+     *              ":param1" => $this->param1,
+     *              ":param2" => $this->param2,
+     *          ];
+     *      }
+     * }
+     * ```
+     *
+     * This way, the placeholders `:param1` and `:param2` will be replaced by the respective values.
+     * The use of colons in the beggining is not mandatory, but recommended.
+     *
+     * @internal
+     */
+    final public function resolveArrayMessage(AttributeInterface $attribute, int|string $index): string
+    {
+        $params = [
+            ...$this->stringifyCustomParams(),
+            ":name" => $this->stringifyParam($attribute->getName()),
+            ":value" => $this->stringifyParam($attribute->getValue()[$index]),
         ];
 
         return $this->replaceParams($params);
@@ -112,6 +156,13 @@ abstract class ValidationRule
     final public function getMessage(): string
     {
         return $this->message;
+    }
+
+    private function stringifyCustomParams(): array
+    {
+        return array_map(function ($value) {
+            return $this->stringifyParam($value);
+        }, $this->params);
     }
 
     private function stringifyParam(mixed $value): string

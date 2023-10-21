@@ -3,55 +3,98 @@
 namespace Enricky\RequestValidator\Types;
 
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
-use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
+use Enricky\RequestValidator\Exceptions\NoTypeSentException;
+use Enricky\RequestValidator\Rules\TypeRule;
 
 class ArrayOf implements DataTypeInterface
 {
-    private ?DataTypeInterface $type = null;
+    /**
+     *  @var DataTypeInterface|DataTypeInterface[]|null $types
+     */
+    private DataTypeInterface|array|null $types = null;
 
-    public function __construct(DataTypeInterface|string|null $type = null)
+    /**
+     * @param DataTypeInterface|string|(string|DataTypeInterface)[] $types The data types to validate against.
+     */
+    public function __construct(DataTypeInterface|string|array|null $types = null)
     {
-        if (is_string($type)) {
-            $type = DataType::tryFrom(strtolower($type));
-            if (!$type) {
-                throw new InvalidDataTypeException("Invalid data type '$type'");
+        if ($types instanceof DataTypeInterface || is_null($types)) {
+            $this->types = $types;
+        } elseif (is_string($types)) {
+            $this->types = TypeRule::getDataTypeFromString($types);
+        } else {
+            if (empty($types)) {
+                throw new NoTypeSentException("you sould send at least one data type.");
             }
-        }
 
-        $this->type = $type;
+            $this->types = array_map(function (DataTypeInterface|string $type) {
+                if ($type instanceof DataTypeInterface) {
+                    return $type;
+                }
+
+                return TypeRule::getDataTypeFromString($type);
+            }, $types);
+        }
     }
 
     public function strictValidate(mixed $value): bool
     {
-        if (!is_array($value)) {
-            return false;
-        }
-
-        if (!$this->type) {
-            return true;
-        }
-
-        foreach ($value as $element) {
-            if (!$this->type->strictValidate($element)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->validateArray($value, strict: true);
     }
 
     public function validate(mixed $value): bool
     {
+        return $this->validateArray($value, strict: false);
+    }
+
+    public function getName(): string
+    {
+        if (!$this->types) {
+            return "array";
+        }
+
+        if (is_array($this->types)) {
+            $mappedTypes = array_map(fn (DataTypeInterface $type) => $type->getName(), $this->types);
+            $join = join("|", $mappedTypes);
+            return "($join)[]";
+        }
+
+        return $this->types->getName() . "[]";
+    }
+
+    public function getType(): DataTypeInterface|array
+    {
+        return $this->types;
+    }
+
+    private function validateArray(mixed $value, bool $strict): bool
+    {
         if (!is_array($value)) {
             return false;
         }
 
-        if (!$this->type) {
+        if (!$this->types) {
+            return true;
+        }
+
+        if (is_array($this->types)) {
+            foreach ($value as $element) {
+                $elementIsValid = $this->validateAgainstTypes($element, $strict);
+
+                if (!$elementIsValid) {
+                    return false;
+                }
+            }
+
             return true;
         }
 
         foreach ($value as $element) {
-            if (!$this->type->validate($element)) {
+            if (!$strict && !$this->types->validate($element)) {
+                return false;
+            }
+
+            if ($strict && !$this->types->strictValidate($element)) {
                 return false;
             }
         }
@@ -59,17 +102,20 @@ class ArrayOf implements DataTypeInterface
         return true;
     }
 
-    public function getName(): string
+    private function validateAgainstTypes(mixed $element, bool $strict): bool
     {
-        if (!$this->type) {
-            return "array";
+        $elementIsValid = false;
+
+        foreach ($this->types as $type) {
+            if ($strict && $type->strictValidate($element)) {
+                $elementIsValid = true;
+            }
+
+            if (!$strict && $type->validate($element)) {
+                $elementIsValid = true;
+            }
         }
 
-        return $this->type->getName() . "[]";
-    }
-
-    public function getType(): DataTypeInterface
-    {
-        return $this->type;
+        return $elementIsValid;
     }
 }
