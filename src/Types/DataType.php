@@ -74,7 +74,7 @@ enum DataType: string implements DataTypeInterface
             return false;
         }
 
-        if ($value[0] === '-') {
+        if ($value[0] === "-") {
             return ctype_digit(substr($value, 1));
         }
 
