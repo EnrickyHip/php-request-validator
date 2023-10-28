@@ -20,7 +20,7 @@ abstract class RequestValidator
     protected array $data;
 
     /** @var mixed[] $nullables */
-    private $nullables = ["null", "", "undefined"];
+    private array $nullables = ["null", "", "undefined"];
 
     /** @param mixed[] $data */
     public function __construct(array &$data)
@@ -64,16 +64,16 @@ abstract class RequestValidator
 
     /**
      * Checks if at least one of the given validators were sent.
-     * @param ValidatorInterface[] $validators An array of validators to check.
+     * @param string[] $fields An array of fields to check.
      * @param string $message A custom error message.
      * @param bool $exclusive When true it will only be validated if only one field was sent.
      */
-    final public function requireOr(array $validators, string $message, bool $exclusive = false): void
+    final public function requireOr(array $fields, string $message, bool $exclusive = false): void
     {
         $valid = false;
 
-        foreach ($validators as $validator) {
-            if ($validator->getValue() !== null) {
+        foreach ($fields as $field) {
+            if (isset($this->data[$field])) {
                 if ($valid && $exclusive) {
                     $valid = false;
                     break;

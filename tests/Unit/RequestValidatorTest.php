@@ -298,13 +298,14 @@ test("validateFile() should add custom rule to IsFileRule", function () {
 });
 
 test("requireOr() should validate if at least one field was sent", function (mixed $value1, mixed $value2, mixed $value3) {
-    $data = [];
+    $data = [
+        "field1" => $value1,
+        "field2" => $value2,
+        "field3" => $value3,
+    ];
     $request = createRequest([], $data);
-    $validator1 = createValidator(true, [], "field1", $value1);
-    $validator2 = createValidator(true, [], "field2", $value2);
-    $validator3 = createValidator(true, [], "field3", $value3);
 
-    $request->requireOr([$validator1, $validator2, $validator3], "at least one should be send");
+    $request->requireOr(["field1", "field2", "field3"], "at least one should be send");
     expect($request->validate())->toBeTrue();
 })->with([
     [null, null, "valid"],
@@ -315,23 +316,22 @@ test("requireOr() should validate if at least one field was sent", function (mix
 test("requireOr() should not validate if no one was sent", function () {
     $data = [];
     $request = createRequest([], $data);
-    $validator1 = createValidator(true, [], "field1", null);
-    $validator2 = createValidator(true, [], "field2", null);
-    $validator3 = createValidator(true, [], "field3", null);
 
-    $request->requireOr([$validator1, $validator2, $validator3], "at least one should be send");
+    $request->requireOr(["field1", "field2", "field3"], "at least one should be send");
     expect($request->validate())->toBeFalse();
     expect($request->getErrors()[0])->toBe("at least one should be send");
 });
 
 test("requireOr() with exclusive parameter should validate if only one field was sent", function (mixed $value1, mixed $value2, mixed $value3) {
-    $data = [];
+    $data = [
+        "field1" => $value1,
+        "field2" => $value2,
+        "field3" => $value3,
+    ];
+    
     $request = createRequest([], $data);
-    $validator1 = createValidator(true, [], "field1", $value1);
-    $validator2 = createValidator(true, [], "field2", $value2);
-    $validator3 = createValidator(true, [], "field3", $value3);
 
-    $request->requireOr([$validator1, $validator2, $validator3], "at least one should be send", true);
+    $request->requireOr(["field1", "field2", "field3"], "only one should be send", true);
     expect($request->validate())->toBeTrue();
 })->with([
     [null, null, "valid"],
@@ -340,15 +340,17 @@ test("requireOr() with exclusive parameter should validate if only one field was
 ]);
 
 test("requireOr() with exclusive parameter should not validate if more than one field were sent", function (mixed $value1, mixed $value2, mixed $value3) {
-    $data = [];
-    $request = createRequest([], $data);
-    $validator1 = createValidator(true, [], "field1", $value1);
-    $validator2 = createValidator(true, [], "field2", $value2);
-    $validator3 = createValidator(true, [], "field3", $value3);
+    $data = [
+        "field1" => $value1,
+        "field2" => $value2,
+        "field3" => $value3,
+    ];
 
-    $request->requireOr([$validator1, $validator2, $validator3], "just one one should be send", true);
+    $request = createRequest([], $data);
+
+    $request->requireOr(["field1", "field2", "field3"], "only one should be send", true);
     expect($request->validate())->toBeFalse();
-    expect($request->getErrors()[0])->toBe("just one one should be send");
+    expect($request->getErrors()[0])->toBe("only one should be send");
 })->with([
     [null, 1.1, "valid"],
     [null, 11, true],
