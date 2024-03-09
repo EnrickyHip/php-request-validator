@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Enricky\RequestValidator\Abstract;
 
 /** Interface to represent request attributes. It has a name (key) and value pair. */

@@ -52,7 +52,7 @@ class ArrayValidator extends Validator
      * @param DataTypeInterface|string|(DataTypeInterface|string)[] $types expected elements types.
      * @param ?string $message optional custom message
      * @param bool $strict set strict type validation
-     * @return ArrayValidator The instance of ArrayValidator to allow chaining another validation rules.
+     * @return static The instance of ArrayValidator to allow chaining another validation rules.
      *
      * Call using `DataType` enum:
      *
@@ -72,9 +72,9 @@ class ArrayValidator extends Validator
      * $this->validateArray("ages")->type(["int", DataType::STRING]);
      * ```
      */
-    public function type(DataTypeInterface|string|array $type, ?string $message = null, bool $strict = true): static
+    public function type(DataTypeInterface|string|array $types, ?string $message = null, bool $strict = true): static
     {
-        $rule = new TypeRule(new ArrayOf($type), $message, $strict);
+        $rule = new TypeRule(new ArrayOf($types), $message, $strict);
         $this->addRule($rule);
         return $this;
     }
@@ -82,7 +82,7 @@ class ArrayValidator extends Validator
     /**
      * force an array to have a maximum length.
      *
-     * @param int|float $min The maximum length allowed for the array.
+     * @param int $max The maximum length allowed for the array.
      * @param string|null $message The custom error message for the rule.
      */
     public function maxLength(int $max, ?string $message = null): static
@@ -95,7 +95,7 @@ class ArrayValidator extends Validator
     /**
      * force an array to have a minimum length.
      *
-     * @param int|float $min The minimum length allowed for the array.
+     * @param int $min The minimum length allowed for the array.
      * @param string|null $message The custom error message for the rule.
      */
     public function minLength(int $min, ?string $message = null): static
@@ -117,15 +117,19 @@ class ArrayValidator extends Validator
                 return false;
             }
         }
-
+        
         $value = $this->attribute->getValue();
-
+        
         if ($value === null || empty($value)) {
             return true;
         }
 
+        if (!is_array($value)) {
+            return false;
+        }
+
         foreach ($this->rules as $rule) {
-            foreach ($this->attribute->getValue() as $index => $element) {
+            foreach ($value as $index => $element) {
                 if (!$rule->validate($element)) {
                     $this->errors[] = $rule->resolveArrayMessage($this->attribute, $index);
                 }

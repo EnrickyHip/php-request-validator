@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Enricky\RequestValidator\Types;
 
 use Enricky\RequestValidator\Abstract\DataTypeInterface;
+use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 use Enricky\RequestValidator\Exceptions\NoTypeSentException;
 use Enricky\RequestValidator\Rules\TypeRule;
+use Exception;
 
 class ArrayOf implements DataTypeInterface
 {
@@ -62,7 +66,8 @@ class ArrayOf implements DataTypeInterface
         return $this->types->getName() . "[]";
     }
 
-    public function getType(): DataTypeInterface|array
+    /** @return DataTypeInterface|DataTypeInterface[]|null */
+    public function getType(): DataTypeInterface|array|null
     {
         return $this->types;
     }
@@ -105,6 +110,10 @@ class ArrayOf implements DataTypeInterface
     private function validateAgainstTypes(mixed $element, bool $strict): bool
     {
         $elementIsValid = false;
+
+        if (!is_array($this->types)) {
+            throw new InvalidDataTypeException("Only can call validateAgainstTypes() if ArrayOf::types is an array of DataTypeInterface");
+        }
 
         foreach ($this->types as $type) {
             if ($strict && $type->strictValidate($element)) {

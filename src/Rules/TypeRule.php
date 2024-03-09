@@ -71,6 +71,7 @@ class TypeRule extends ValidationRule
         return $this->validateType($this->types, $value);
     }
 
+    /** @return DataTypeInterface|DataTypeInterface[] */
     public function getType(): DataTypeInterface|array
     {
         return $this->types;

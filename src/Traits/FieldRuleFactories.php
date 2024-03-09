@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Enricky\RequestValidator\Traits;
 
 use Closure;
+use Enricky\RequestValidator\Exceptions\InvalidEnumException;
 use Enricky\RequestValidator\Rules\CustomRule;
 use Enricky\RequestValidator\Rules\IsArrayRule;
 use Enricky\RequestValidator\Rules\IsDateStringRule;

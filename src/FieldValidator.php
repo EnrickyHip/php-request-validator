@@ -38,7 +38,7 @@ class FieldValidator extends Validator
      * @param DataTypeInterface|string|(string|DataTypeInterface)[] $types expected field types.
      * @param ?string $message optional custom message
      * @param bool $strict set strict type validation
-     * @return FieldValidator The instance of FieldValidator to allow chaining another validation rules.
+     * @return static The instance of FieldValidator to allow chaining another validation rules.
      *
      * Call using `DataType` enum:
      *

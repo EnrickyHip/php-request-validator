@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Enricky\RequestValidator\Abstract;
 
+use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
+
 /** Representation of a validation rule. */
 abstract class ValidationRule
 {
@@ -57,7 +59,7 @@ abstract class ValidationRule
     }
 
     /**
-     * Resolve the error message by replacing placeholders with actual values.
+     * Resolve the error message by replacing placeholders with a string representation of the value.
      * The two placeholders `:name` and `:value` are built in and will be replaced automatically.
      *
      * @param AttributeInterface $attribute The attribute being validated.
@@ -92,7 +94,6 @@ abstract class ValidationRule
      */
     final public function resolveMessage(AttributeInterface $attribute): string
     {
-
         $params = [
             ...$this->stringifyCustomParams(),
             ":name" => $this->stringifyParam($attribute->getName()),
@@ -103,11 +104,12 @@ abstract class ValidationRule
     }
 
     /**
-     * Resolve the error message by replacing placeholders with actual values for arrays.
+     * Resolve the error message by replacing placeholders with string a representation of the value in a specific element of an array.
      * The two placeholders `:name` and `:value` are built in and will be replaced automatically.
      *
      * @param AttributeInterface $attribute The attribute being validated.
      * @param int|string $index The array index of the element to be replaced by :name.
+     * @throws InvalidDataTypeException If the attribute value is not an array.
      * @return string The resolved error message.
      *
      * If you want to create your own placeholders, set the property `$this->params` inside your constructor and add the placeholders to the property `$this->message`:
@@ -139,6 +141,10 @@ abstract class ValidationRule
      */
     final public function resolveArrayMessage(AttributeInterface $attribute, int|string $index): string
     {
+        if (!is_array($attribute->getValue())) {
+            throw new InvalidDataTypeException("Attribute value should be an array to the message be resolved.");
+        }
+        
         $params = [
             ...$this->stringifyCustomParams(),
             ":name" => $this->stringifyParam($attribute->getName()),
@@ -158,9 +164,10 @@ abstract class ValidationRule
         return $this->message;
     }
 
+    /** @return string[] */
     private function stringifyCustomParams(): array
     {
-        return array_map(function ($value) {
+        return array_map(function (mixed $value) {
             return $this->stringifyParam($value);
         }, $this->params);
     }

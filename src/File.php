@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Enricky\RequestValidator;
 
 use Enricky\RequestValidator\Abstract\FileInterface;

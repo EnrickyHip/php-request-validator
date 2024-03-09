@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Enricky\RequestValidator\Abstract\AttributeInterface;
 use Enricky\RequestValidator\Abstract\ValidationRule;
+use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 
 class TestRule extends ValidationRule
 {
@@ -66,7 +67,19 @@ it("should replace :value param on message", function (mixed $value, string $res
     [new stdClass(), "{object}"],
 ]);
 
-it("should replace :value param with element value on resolveArrayMessage", function (mixed $value, string $resolvedValue, int|string $index) {
+it("should throw InvalidDataTypeException if sent an attribute if non array value", function (AttributeInterface $attribute) {
+    $rule = createRule(false, false, "value :value is invalid");
+    $closure = fn () => $rule->resolveArrayMessage($attribute, 0);
+    expect($closure)->toThrow(InvalidDataTypeException::class);
+})->with([
+    new AttributeMock("name", "value"),
+    new AttributeMock("name", 1),
+    new AttributeMock("name", 1.2),
+    new AttributeMock("name", true),
+    new AttributeMock("name", new stdClass()),
+]);
+
+it("should replace :value param with element value on resolveArrayMessage", function (array $value, string $resolvedValue, int|string $index) {
     $attribute = new AttributeMock("value", $value);
     $rule = createRule(false, false, "value :value is invalid");
     expect($rule->resolveArrayMessage($attribute, $index))->toBe("value $resolvedValue is invalid");

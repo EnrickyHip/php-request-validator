@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Enricky\RequestValidator\Abstract;
 
 use Enricky\RequestValidator\Types\FileType;
