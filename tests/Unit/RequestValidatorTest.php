@@ -1,172 +1,91 @@
 <?php
 
 use Enricky\RequestValidator\Abstract\RequestValidator;
-use Enricky\RequestValidator\Abstract\ValidationRule;
-use Enricky\RequestValidator\Abstract\ValidatorInterface;
 use Enricky\RequestValidator\ArrayValidator;
 use Enricky\RequestValidator\FieldValidator;
-use Enricky\RequestValidator\File;
 use Enricky\RequestValidator\FileValidator;
 
-/** @param string[] $errors */
-function createValidator(bool $valid, array $errors, string $name = "name", mixed $value = "value")
-{
-    return new class($valid, $errors, $name, $value) implements ValidatorInterface
-    {
-        public function __construct(
-            private bool $valid,
-            private array $errors,
-            private string $name,
-            private mixed $value
-        ) {
-        }
-
-        public function validate(): bool
-        {
-            return $this->valid;
-        }
-
-        public function getErrors(): array
-        {
-            return $this->errors;
-        }
-
-        public function addRule(ValidationRule $rule): static
-        {
-            return $this;
-        }
-
-        public function getName(): string
-        {
-            return $this->name;
-        }
-
-        public function getValue(): mixed
-        {
-            return $this->value;
-        }
-    };
-}
-
-/** @param ValidatorInterface[] $validators */
-function createRequest(
-    array $validators,
-    array &$data
-) {
-    return new class($validators, $data) extends RequestValidator
-    {
-        public function __construct(private array $validators, array &$data)
-        {
-            parent::__construct($data);
-        }
-
-        public function rules(): array
-        {
-            return $this->validators;
-        }
-    };
-}
-
-it("should validate if no validators was sent", function () {
+it("should validate if no rules were defined", function () {
     $data = [];
-    $request = createRequest([], $data);
+    $request = new RequestValidator($data);
     expect($request->validate())->toBeTrue();
-    expect($request->getErrors())->toBeArray()->toBeEmpty();
+    expect($request->getErrors())->toBeEmpty();
 });
 
-it("should validate if all validators are valid", function () {
+it("should add validators", function () {
     $data = [];
-    $request = createRequest([
-        createValidator(true, []),
-        createValidator(true, []),
-        createValidator(true, []),
-        createValidator(true, []),
-    ], $data);
+    $request = new RequestValidator($data);
+    expect($request->getValidators())->toBeEmpty();
 
-    expect($request->validate([]))->toBeTrue();
-    expect($request->getErrors([]))->toBeArray()->toBeEmpty();
-});
+    $request->validateField("field");
+    expect($request->getValidators())->not->toBeEmpty();
+    expect($request->getValidators())->toContainOnlyInstancesOf(FieldValidator::class);
+    expect($request->getValidators())->toHaveLength(1);
 
-it("should not validate if at least on validator is invalid", function () {
-    $data = [];
-    $request = createRequest([
-        createValidator(true, []),
-        createValidator(false, ["invalid1", "invalid2"]),
-        createValidator(false, ["invalid3"]),
-        createValidator(true, []),
-    ], $data);
+    $request->validateArray("array");
+    expect($request->getValidators())->toHaveLength(2);
+    expect($request->getValidators()[1])->toBeInstanceOf(ArrayValidator::class);
 
-    expect($request->validate([]))->toBeFalse();
-    expect($request->getErrors([]))->toEqualCanonicalizing(["invalid1", "invalid2", "invalid3"]);
+    $request->validateFile("file");
+    expect($request->getValidators())->toHaveLength(3);
+    expect($request->getValidators()[2])->toBeInstanceOf(FileValidator::class);
 });
 
 it("should not return duplicate errors", function () {
     $data = [];
-    $request = createRequest([
-        createValidator(false, ["invalid1", "invalid2"]),
-        createValidator(false, ["invalid1"]),
-    ], $data);
 
-    expect($request->validate([]))->toBeFalse();
-    expect($request->getErrors([]))->toEqualCanonicalizing(["invalid1", "invalid2"]);
+    $request = new RequestValidator($data);
+    $request->validateField("field")->isRequired("invalid1");
+    $request->validateFile("file")->isRequired("invalid1");
+    $request->validateArray("array")->isRequired("invalid2");
+
+    expect($request->validate())->toBeFalse();
+    expect($request->getErrors())->toEqualCanonicalizing(["invalid1", "invalid2"]);
 });
 
-it("should create field validators", function () {
-    $data = ["name" => "Enricky"];
-    $request = createRequest([], $data);
 
-    $validator1 = $request->validateField("name");
-    $validator2 = $request->validateField("email");
-
-    expect([$validator1, $validator2])->toContainOnlyInstancesOf(FieldValidator::class);
-    expect($validator1->getName())->toBe("name");
-    expect($validator1->getValue())->toBe("Enricky");
-});
-
-it("should create array validators", function () {
-    $data = ["numbers" => [1, 2, 3]];
-    $request = createRequest([], $data);
-
-    $validator1 = $request->validateArray("numbers");
-    $validator2 = $request->validateArray("array");
-
-    expect([$validator1, $validator2])->toContainOnlyInstancesOf(ArrayValidator::class);
-    expect($validator1->getName())->toBe("numbers");
-    expect($validator1->getValue())->toEqual([1, 2, 3]);
-});
-
-it("should create file validators", function () {
+it("should validate if all validators are valid with built in validators", function () {
     $data = [
-        "file" => [
-            "name" => "name.png",
-            "full_path" => "name.png",
-            "tmp_name" => "C:\\xampp\\tmp\\php8BC8.tmp",
-            "error" => 0,
-            "size" => 34620
-        ]
+        "field" => "field",
+        "field2" => "field2",
+        "array" => [],
     ];
 
-    $request = createRequest(
-        [
-            createValidator(false, ["invalid1", "invalid2"]),
-            createValidator(false, ["invalid1"]),
+    $request = new RequestValidator($data);
+    $request->validateField("field")->isRequired();
+    $request->validateField("field2")->isRequired();
+    $request->validateArray("array")->isRequired();
+
+    expect($request->validate())->toBeTrue();
+    expect($request->getErrors())->toBeEmpty();
+});
+
+
+it("should not validate if at least one validator is invalid valid with built in validators", function () {
+    $data = [
+        "field" => "field",
+        "file" => [
+            "name" => "example.txt",
+            "full_path" => "example.txt",
+            "type" => "text/plain",
+            "tmp_name" => "/tmp/phpxyz",
+            "error" => 0,
+            "size" => 12345
         ],
-        $data
-    );
+    ];
 
-    $validator1 = $request->validateFile("file");
-    $validator2 = $request->validateFile("file2");
+    $request = new RequestValidator($data);
+    $request->validateField("field")->isRequired();
+    $request->validateFile("file")->isRequired();
+    $request->validateArray("array")->isRequired();
 
-    expect([$validator1, $validator2])->toContainOnlyInstancesOf(FileValidator::class);
-    expect($validator1->getName())->toBe("file");
-    expect($validator1->getValue())->toBeInstanceOf(File::class);
+    expect($request->validate())->toBeFalse();
+    expect($request->getErrors())->not->toBeEmpty();
 });
 
 it("should set null if key does not exist on call validateField, validateFile and validateArray", function () {
     $data = [];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
@@ -179,9 +98,7 @@ it("should set null if key does not exist on call validateField, validateFile an
 
 it("should set null if value is an nullable string on call validateField, validateFile and validateArray", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $validator1 = $request->validateField("name");
     $validator2 = $request->validateFile("name");
@@ -194,9 +111,7 @@ it("should set null if value is an nullable string on call validateField, valida
 
 it("should set value to null in the original array if value is an nullable string on call validateField", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateField("name");
 
@@ -205,9 +120,7 @@ it("should set value to null in the original array if value is an nullable strin
 
 it("should set value to null in the original array if value is an nullable string on call validateFile", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateFile("name");
 
@@ -216,9 +129,7 @@ it("should set value to null in the original array if value is an nullable strin
 
 it("should set value to null in the original array if value is an nullable string on call validateArray", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateArray("name");
 
@@ -227,9 +138,7 @@ it("should set value to null in the original array if value is an nullable strin
 
 it("should set value to null in the original array if value is not sent on call validateField", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateField("email");
 
@@ -238,9 +147,7 @@ it("should set value to null in the original array if value is not sent on call 
 
 it("should set value to null in the original array if value is not sent on call validateFile", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateFile("email");
 
@@ -249,9 +156,7 @@ it("should set value to null in the original array if value is not sent on call 
 
 it("should set value to null in the original array if value is not sent on call validateArray", function (string $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateArray("email");
 
@@ -260,9 +165,7 @@ it("should set value to null in the original array if value is not sent on call 
 
 it("should maintain values if they are not nullables on validateField", function (mixed $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateField("name");
     expect($data["name"])->toBe($value);
@@ -270,27 +173,25 @@ it("should maintain values if they are not nullables on validateField", function
 
 it("should maintain values if they are not nullables on validateFile", function (mixed $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateFile("name");
+
     expect($data["name"])->toBe($value);
 })->with(["not null", "0", 0, fn () => [], false, true]);
 
 it("should maintain values if they are not nullables on validateArray", function (mixed $value) {
     $data = ["name" => $value];
-    $request = createRequest([
-        createValidator(false, []),
-    ], $data);
+    $request = new RequestValidator($data);
 
     $request->validateArray("name");
+
     expect($data["name"])->toBe($value);
 })->with(["not null", "0", 0, fn () => [], false, true]);
 
 test("validateFile() should add custom rule to IsFileRule", function () {
     $data = ["name" => []];
-    $request = createRequest([], $data);
+    $request = new RequestValidator($data);
 
     $fileValidator = $request->validateFile("name", "invalid file");
     $isFileRule = $fileValidator->getRules()[0];
@@ -303,7 +204,7 @@ test("requireOr() should validate if at least one field was sent", function (mix
         "field2" => $value2,
         "field3" => $value3,
     ];
-    $request = createRequest([], $data);
+    $request = new RequestValidator($data);
 
     $request->requireOr(["field1", "field2", "field3"], "at least one should be send");
     expect($request->validate())->toBeTrue();
@@ -315,7 +216,7 @@ test("requireOr() should validate if at least one field was sent", function (mix
 
 test("requireOr() should not validate if no one was sent", function () {
     $data = [];
-    $request = createRequest([], $data);
+    $request = new RequestValidator($data);
 
     $request->requireOr(["field1", "field2", "field3"], "at least one should be send");
     expect($request->validate())->toBeFalse();
@@ -328,8 +229,8 @@ test("requireOr() with exclusive parameter should validate if only one field was
         "field2" => $value2,
         "field3" => $value3,
     ];
-    
-    $request = createRequest([], $data);
+
+    $request = new RequestValidator($data);
 
     $request->requireOr(["field1", "field2", "field3"], "only one should be send", true);
     expect($request->validate())->toBeTrue();
@@ -346,7 +247,7 @@ test("requireOr() with exclusive parameter should not validate if more than one 
         "field3" => $value3,
     ];
 
-    $request = createRequest([], $data);
+    $request = new RequestValidator($data);
 
     $request->requireOr(["field1", "field2", "field3"], "only one should be send", true);
     expect($request->validate())->toBeFalse();

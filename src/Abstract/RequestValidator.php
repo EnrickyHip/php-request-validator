@@ -10,8 +10,8 @@ use Enricky\RequestValidator\FieldValidator;
 use Enricky\RequestValidator\File;
 use Enricky\RequestValidator\FileValidator;
 
-/** Abstract class to represent a request validation.  */
-abstract class RequestValidator
+/** class to represent a request validation.  */
+class RequestValidator
 {
     /** @var string[] $errors */
     private array $errors = [];
@@ -22,6 +22,9 @@ abstract class RequestValidator
     /** @var mixed[] $nullables */
     private array $nullables = ["null", "", "undefined"];
 
+    /** @var ValidatorInterface[] $validators */
+    protected array $validators = [];
+
     /** @param mixed[] $data */
     public function __construct(array &$data)
     {
@@ -29,12 +32,22 @@ abstract class RequestValidator
     }
 
     /**
-     * Defines the validaton rules for the request data.
-     *
-     * @return ValidatorInterface[] An array of validator instances.
-     *
+     * A method to defines validaton rules for the request data.
      */
-    abstract public function rules(): array;
+    public function rules(): void
+    {
+        // This method is used to allow add rules for a request in a child class
+    }
+
+    /** 
+     * get the validators of the request validator.
+     * 
+     * @return ValidatorInterface[] $validators
+     */
+    public function getValidators(): array
+    {
+        return $this->validators;
+    }
 
     /**
      * Validates the request data based on the defined rules.
@@ -53,9 +66,9 @@ abstract class RequestValidator
      */
     final public function getErrors(): array
     {
-        $validators = $this->rules();
+        $this->rules();
 
-        foreach ($validators as $validator) {
+        foreach ($this->validators as $validator) {
             $this->errors = [...$this->errors, ...$validator->getErrors()];
         }
 
@@ -125,7 +138,10 @@ abstract class RequestValidator
         }
 
         $attriubte = new Attribute($name, $value);
-        return new FieldValidator($attriubte);
+        $fieldValidator = new FieldValidator($attriubte);
+
+        $this->validators[] = $fieldValidator;
+        return $fieldValidator;
     }
 
     /**
@@ -158,7 +174,9 @@ abstract class RequestValidator
         }
 
         $attriubte = new Attribute($name, $value);
-        return new FileValidator($attriubte, $message);
+        $fileValidator = new FileValidator($attriubte, $message);
+        $this->validators[] = $fileValidator;
+        return $fileValidator;
     }
 
     final public function validateArray(string $name, ?string $message = null): ArrayValidator
@@ -170,7 +188,9 @@ abstract class RequestValidator
         }
 
         $attriubte = new Attribute($name, $value);
-        return new ArrayValidator($attriubte, $message);
+        $arrayValidator = new ArrayValidator($attriubte, $message);
+        $this->validators[] = $arrayValidator;
+        return $arrayValidator;
     }
 
     private function checkEmpty(mixed $name): bool
