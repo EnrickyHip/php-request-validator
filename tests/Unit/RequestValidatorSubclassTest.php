@@ -1,6 +1,6 @@
 <?php
 
-use Enricky\RequestValidator\Abstract\RequestValidator;
+use Enricky\RequestValidator\RequestValidator;
 use Enricky\RequestValidator\Abstract\ValidationRule;
 use Enricky\RequestValidator\Abstract\ValidatorInterface;
 

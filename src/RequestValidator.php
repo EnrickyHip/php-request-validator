@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Enricky\RequestValidator\Abstract;
+namespace Enricky\RequestValidator;
 
+use Enricky\RequestValidator\Abstract\ValidatorInterface;
 use Enricky\RequestValidator\ArrayValidator;
 use Enricky\RequestValidator\Attribute;
 use Enricky\RequestValidator\FieldValidator;
