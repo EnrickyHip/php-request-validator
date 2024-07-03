@@ -115,12 +115,12 @@ class TypeRule extends ValidationRule
      */
     public static function getDataTypeFromString(string $type): DataTypeInterface
     {
-        $type = DataType::tryFrom(strtolower($type));
+        $typeEnum = DataType::tryFrom(strtolower($type));
 
-        if (!$type) {
+        if (!$typeEnum) {
             throw new InvalidDataTypeException("Value '$type' is not a valid data type.");
         }
 
-        return $type;
+        return $typeEnum;
     }
 }

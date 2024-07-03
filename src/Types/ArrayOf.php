@@ -8,7 +8,6 @@ use Enricky\RequestValidator\Abstract\DataTypeInterface;
 use Enricky\RequestValidator\Exceptions\InvalidDataTypeException;
 use Enricky\RequestValidator\Exceptions\NoTypeSentException;
 use Enricky\RequestValidator\Rules\TypeRule;
-use Exception;
 
 class ArrayOf implements DataTypeInterface
 {
@@ -112,7 +111,9 @@ class ArrayOf implements DataTypeInterface
         $elementIsValid = false;
 
         if (!is_array($this->types)) {
-            throw new InvalidDataTypeException("Only can call validateAgainstTypes() if ArrayOf::types is an array of DataTypeInterface");
+            throw new InvalidDataTypeException(
+                "You can only call validateAgainstTypes() if property ArrayOf::types is an array"
+            );
         }
 
         foreach ($this->types as $type) {
