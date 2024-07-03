@@ -11,18 +11,29 @@ use Enricky\RequestValidator\Traits\FieldRuleFactories;
 /**
  * Builder class that allow you to add validation rules for a field. Do not use this class directly. Use RequestsValidator::validateField() instead.
  * Add your desired validation rules for a field:
- *
+ * 
+ * Using directly:
+ * 
+ * ```php
+ * 
+ * $request = new RequestValidator($data);
+ * $request->validateField("email")
+ *     ->isRequired()
+ *     ->type(DataType::STRING)
+ *     ->isEmail("Invalid Email!");
+ * ```
+ * 
+ * Using as a class:
+ * 
  * ```php
  * class MyRequest extends RequestValidator
  * {
  *     public function rules(): array
  *     {
- *          $emailValidator = $this->validateField("email")
+ *          $this->validateField("email")
  *              ->isRequired()
  *              ->type(DataType::STRING)
- *              ->addRule(new IsEmailRule("Invalid Email!"));
- *
- *           return [$emailValidator];
+ *              ->isEmail("Invalid Email!");
  *     }
  * }
  *

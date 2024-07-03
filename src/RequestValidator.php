@@ -34,6 +34,22 @@ class RequestValidator
 
     /**
      * A method to defines validaton rules for the request data.
+     * 
+     * Example:
+     * 
+     * ```php
+     * class MyRequest extends RequestValidator
+     * {
+     *     public function rules(): array
+     *     {
+     *          $this->validateField("email")
+     *              ->isRequired()
+     *              ->type(DataType::STRING)
+     *              ->isEmail("Invalid Email!");
+     *     }
+     * }
+     *
+     * ```
      */
     public function rules(): void
     {
@@ -113,18 +129,26 @@ class RequestValidator
      *
      * Add your desired validation rules for a field:
      *
+     * Using directly:
+     * ```php
+     * 
+     * $request = new RequestValidator($data);
+     * $request->validateField("email")
+     *     ->isRequired()
+     *     ->type(DataType::STRING)
+     *     ->isEmail("Invalid Email!");
+     * ```
+     * Using as a class:
      * ```php
      *
      * class MyRequest extends RequestValidator
      * {
      *     public function rules(): array
      *     {
-     *          $emailValidator = $this->validateField("email")
+     *          $this->validateField("email")
      *              ->isRequired()
      *              ->type(DataType::STRING)
      *              ->addRule(new IsEmailRule("Invalid Email!"));
-     *
-     *           return [$emailValidator];
      *     }
      * }
      *
@@ -152,18 +176,28 @@ class RequestValidator
      *
      * Add your desired validation rules for a file:
      *
+     * Using directly:
+     * 
+     * ```php
+     * 
+     * $request = new RequestValidator($data);
+     * $request->validateFile("profileImg")
+     *     ->type([FileType::PNG, FileType::JPEG], "Invalid file format!")
+     *     ->maxSize(5_000_000, "too big!");
+     * ```
+     * 
+     * Using as a class:
      * ```php
      * class MyRequest extends RequestValidator
      * {
      *     public function rules(): array
      *     {
-     *         $profileImgValidator = $this->validateFile("profileImg")
-     *             ->type([FileType::PNG, FileType::JPEG], "Invalid file format!")
+     *         $this->validateFile("profileImg")
+     *             ->type(["png", "jpg"], "Invalid file format!")
      *             ->maxSize(5_000_000, "too big!");
-     *
-     *          return [$profileImgValidator];
      *     }
      * }
+     *
      * ```
      */
     final public function validateFile(string $name, ?string $message = null): FileValidator
@@ -180,6 +214,37 @@ class RequestValidator
         return $fileValidator;
     }
 
+    /**
+     * Creates a array validator. This is a builder class that allows you to add validation rules to a array field.
+     * @param string $name field key name
+     * @return ArrayValidator field validator instance
+     *
+     * Using directly:
+     * 
+     * ```php
+     * 
+     * $request = new RequestValidator($data);
+     * $request->validateArray("emails")
+     *     ->isRequired()
+     *     ->type(DataType::STRING)
+     *     ->isEmail("Invalid Email!");
+     * ```
+     * 
+     * Using as a class:
+     * ```php
+     * class MyRequest extends RequestValidator
+     * {
+     *     public function rules(): array
+     *     {
+     *          $this->validateArray("emails")
+     *              ->isRequired()
+     *              ->type(DataType::STRING)
+     *              ->isEmail("Invalid Email!");
+     *     }
+     * }
+     *
+     * ```
+     */
     final public function validateArray(string $name, ?string $message = null): ArrayValidator
     {
         $value = null;

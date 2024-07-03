@@ -17,17 +17,27 @@ use Enricky\RequestValidator\Types\ArrayOf;
  * Builder class that allow you to add validation rules for an array. Do not use this class directly. Use RequestsValidator::validateArray() instead.
  * Add your desired validation rules for an array:
  *
+ * Using directly:
+ * 
+ * ```php
+ * 
+ * $request = new RequestValidator($data);
+ * $request->validateArray("emails")
+ *     ->isRequired()
+ *     ->type(DataType::STRING)
+ *     ->isEmail("Invalid Email!");
+ * ```
+ * 
+ * Using as a class:
  * ```php
  * class MyRequest extends RequestValidator
  * {
  *     public function rules(): array
  *     {
- *          $emailArrayValidator = $this->validateArray("emails")
+ *          $this->validateArray("emails")
  *              ->isRequired()
  *              ->type(DataType::STRING)
- *              ->addRule(new IsEmailRule("Invalid Email!"));
- *
- *           return [$emailArrayValidator];
+ *              ->isEmail("Invalid Email!");
  *     }
  * }
  *
@@ -117,9 +127,9 @@ class ArrayValidator extends Validator
                 return false;
             }
         }
-        
+
         $value = $this->attribute->getValue();
-        
+
         if ($value === null || empty($value)) {
             return true;
         }

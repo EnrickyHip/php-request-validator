@@ -14,16 +14,25 @@ use Enricky\RequestValidator\Rules\MaxFileSizeRule;
  * Builder class that allow you to add validation rules for a file. Do not use this class directly. Use RequestsValidator::validateFile() instead.
  * Add your desired validation rules for a file:
  *
+ * Using directly:
+ * 
+ * ```php
+ * 
+ * $request = new RequestValidator($data);
+ * $request->validateFile("profileImg")
+ *     ->type([FileType::PNG, FileType::JPEG], "Invalid file format!")
+ *     ->maxSize(5_000_000, "too big!");
+ * ```
+ * 
+ * Using as a class:
  * ```php
  * class MyRequest extends RequestValidator
  * {
  *     public function rules(): array
  *     {
- *         $profileImgValidator = $this->validateFile("profileImg")
- *             ->type([FileType::PNG, FileType::JPEG], "Invalid file format!")
+ *         $this->validateFile("profileImg")
+ *             ->type(["png", "jpg"], "Invalid file format!")
  *             ->maxSize(5_000_000, "too big!");
- *
- *          return [$profileImgValidator];
  *     }
  * }
  *
